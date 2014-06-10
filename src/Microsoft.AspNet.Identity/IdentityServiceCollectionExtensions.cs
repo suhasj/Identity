@@ -33,6 +33,7 @@ namespace Microsoft.Framework.DependencyInjection
             where TUser : class
             where TRole : class
         {
+            services.AddScoped<IIdentityResourceManager<IdentityErrorCode>, IdentityResourceManager>();
             services.Add(IdentityServices.GetDefaultUserServices<TUser>());
             services.Add(IdentityServices.GetDefaultRoleServices<TRole>());
             services.AddScoped<UserManager<TUser>>();

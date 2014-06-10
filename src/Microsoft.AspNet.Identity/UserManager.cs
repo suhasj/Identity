@@ -51,8 +51,9 @@ namespace Microsoft.AspNet.Identity
             }
             Store = store;
             Options = optionsAccessor.Options;
+            ErrorStrings = serviceProvider.GetService<IIdentityResourceManager<IdentityErrorCode>>() ?? new IdentityResourceManager();
             PasswordHasher = serviceProvider.GetService<IPasswordHasher>() ?? new PasswordHasher();
-            UserValidator = serviceProvider.GetService<IUserValidator<TUser>>() ?? new UserValidator<TUser>();
+            UserValidator = serviceProvider.GetService<IUserValidator<TUser>>() ?? new UserValidator<TUser>(ErrorStrings);
             PasswordValidator = serviceProvider.GetService<IPasswordValidator<TUser>>() ?? new PasswordValidator<TUser>();
             ClaimsIdentityFactory = serviceProvider.GetService<IClaimsIdentityFactory<TUser>>() ?? new ClaimsIdentityFactory<TUser>();
             // TODO: Email/Sms/Token services
@@ -115,6 +116,8 @@ namespace Microsoft.AspNet.Identity
             }
         }
 
+        public IIdentityResourceManager<IdentityErrorCode> ErrorStrings { get; set; }
+
         /// <summary>
         ///     Used to send email
         /// </summary>
@@ -146,7 +149,7 @@ namespace Microsoft.AspNet.Identity
                 }
                 _options = value;
             }
-            
+
         }
 
         /// <summary>
@@ -279,7 +282,7 @@ namespace Microsoft.AspNet.Identity
                 var queryableStore = Store as IQueryableUserStore<TUser>;
                 if (queryableStore == null)
                 {
-                    throw new NotSupportedException(Resources.StoreNotIQueryableUserStore);
+                    throw new NotSupportedException(ErrorStrings.GetString(IdentityErrorCode.StoreNotIQueryableUserStore));
                 }
                 return queryableStore.Users;
             }

@@ -44,7 +44,7 @@ namespace Microsoft.AspNet.Identity.Test
         public static UserManager<TUser> TestUserManager<TUser>(IUserStore<TUser> store) where TUser : class
         {
             var options = new OptionsAccessor<IdentityOptions>(null);
-            var validator = new Mock<UserValidator<TUser>>();
+            var validator = new Mock<UserValidator<TUser>>(new IdentityResourceManager());
             var userManager = new UserManager<TUser>(new ServiceCollection().BuildServiceProvider(), store, options);
             validator.Setup(v => v.ValidateAsync(userManager, It.IsAny<TUser>(), CancellationToken.None)).Returns(Task.FromResult(IdentityResult.Success)).Verifiable();
             userManager.UserValidator = validator.Object;

@@ -14,7 +14,7 @@ namespace Microsoft.AspNet.Identity.Test
         public void CanSpecifyUserValidatorInstance()
         {
             var services = new ServiceCollection();
-            var validator = new UserValidator<IdentityUser>();
+            var validator = new UserValidator<IdentityUser>(new IdentityResourceManager());
             services.AddIdentity<IdentityUser>(b => b.AddUserValidator(() => validator));
             Assert.Equal(validator, services.BuildServiceProvider().GetService<IUserValidator<IdentityUser>>());
         }

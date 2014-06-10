@@ -14,7 +14,7 @@ namespace Microsoft.AspNet.Identity.Test
         {
             // Setup
             var manager = MockHelpers.TestUserManager(new NoopUserStore());
-            var validator = new UserValidator<TestUser>();
+            var validator = new UserValidator<TestUser>(new IdentityResourceManager());
 
             // Act
             // Assert
@@ -29,7 +29,7 @@ namespace Microsoft.AspNet.Identity.Test
         {
             // Setup
             var manager = MockHelpers.TestUserManager(new NoopUserStore());
-            var validator = new UserValidator<TestUser>();
+            var validator = new UserValidator<TestUser>(new IdentityResourceManager());
             var user = new TestUser {UserName = input};
 
             // Act
@@ -49,7 +49,7 @@ namespace Microsoft.AspNet.Identity.Test
         {
             // Setup
             var manager = MockHelpers.TestUserManager(new NoopUserStore());
-            var validator = new UserValidator<TestUser>();
+            var validator = new UserValidator<TestUser>(new IdentityResourceManager());
             var user = new TestUser {UserName = userName};
 
             // Act
@@ -77,7 +77,7 @@ namespace Microsoft.AspNet.Identity.Test
             // Setup
             var manager = MockHelpers.TestUserManager(new NoopUserStore());
             manager.Options.User.AllowOnlyAlphanumericNames = false;
-            var validator = new UserValidator<TestUser>();
+            var validator = new UserValidator<TestUser>(new IdentityResourceManager());
             var user = new TestUser {UserName = userName};
 
             // Act

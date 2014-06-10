@@ -14,6 +14,7 @@ namespace Microsoft.AspNet.Identity.InMemory.Test
         {
             var services = new ServiceCollection();
             services.Add(OptionsServices.GetDefaultServices());
+            services.AddTransient<IIdentityResourceManager<IdentityErrorCode>, IdentityResourceManager>();
             services.AddTransient<IUserValidator<IdentityUser>, UserValidator<IdentityUser>>();
             services.AddTransient<IPasswordValidator<IdentityUser>, PasswordValidator<IdentityUser>>();
             services.AddSingleton<IUserStore<IdentityUser>, InMemoryUserStore<IdentityUser>>();

@@ -29,6 +29,7 @@ namespace Microsoft.AspNet.Identity.Test
         {
             var services = new ServiceCollection {IdentityServices.GetDefaultUserServices<TestUser>()};
             services.AddInstance<IOptionsAccessor<IdentityOptions>>(new OptionsAccessor<IdentityOptions>(null));
+            services.AddTransient<IIdentityResourceManager<IdentityErrorCode>, IdentityResourceManager>();
             services.AddTransient<IUserStore<TestUser>, NoopUserStore>();
             services.AddTransient<TestManager>();
             var manager = services.BuildServiceProvider().GetService<TestManager>();

@@ -19,6 +19,16 @@ namespace Microsoft.AspNet.Identity
     /// <typeparam name="TUser"></typeparam>
     public class UserValidator<TUser> : IUserValidator<TUser> where TUser : class
     {
+        public UserValidator(IIdentityResourceManager<IdentityErrorCode> resources) {
+            if (resources == null)
+            {
+                throw new ArgumentNullException("resources");
+            }
+            _resources = resources;
+        }
+
+        private readonly IIdentityResourceManager<IdentityErrorCode> _resources;
+
         /// <summary>
         ///     Validates a user before saving
         /// </summary>
@@ -92,7 +102,7 @@ namespace Microsoft.AspNet.Identity
             var userName = await manager.GetUserNameAsync(user);
             if (string.IsNullOrWhiteSpace(userName))
             {
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.PropertyTooShort, "UserName"));
+                errors.Add(_resources.GetString(IdentityErrorCode.UserNameTooShort));
             }
             else if (manager.Options.User.AllowOnlyAlphanumericNames && !userName.All(IsAlphaNumeric))
             {

@@ -24,6 +24,7 @@
     <Compile Include="ClaimsIdentityFactoryTest.cs" />
     <Compile Include="IdentityBuilderTest.cs" />
     <Compile Include="IdentityOptionsTest.cs" />
+    <Compile Include="IdentityResourcesTest.cs" />
     <Compile Include="IdentityResultTest.cs" />
     <Compile Include="NoopRoleStore.cs" />
     <Compile Include="NoopUserStore.cs" />
