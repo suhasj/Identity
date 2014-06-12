@@ -62,7 +62,7 @@ namespace Microsoft.AspNet.Identity.Test
             }
             else
             {
-                IdentityResultAssert.IsFailure(result);
+                IdentityResultAssert.IsFailure(result, "User name "+userName+" is invalid, can only contain letters or digits.");
             }
         }
 

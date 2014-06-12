@@ -22,8 +22,19 @@ namespace Microsoft.AspNet.Identity
                 // TODO: add rest
                 case IdentityErrorCode.DuplicateEmail:
                     return Resources.DuplicateEmail;
+                case IdentityErrorCode.DuplicateUserName:
+                case IdentityErrorCode.DuplicateRoleName:
+                    return Resources.DuplicateName;
                 case IdentityErrorCode.UserNameTooShort:
                     return Resources.UserNameTooShort;
+                case IdentityErrorCode.RoleNameTooShort:
+                    return Resources.RoleNameTooShort;
+                case IdentityErrorCode.EmailTooShort:
+                    return Resources.EmailTooShort;
+                case IdentityErrorCode.InvalidUserName:
+                    return Resources.InvalidUserName;
+                case IdentityErrorCode.InvalidEmail:
+                    return Resources.InvalidEmail;
                 case IdentityErrorCode.DefaultError:
                 default:
                     return Resources.DefaultError;
@@ -35,7 +46,8 @@ namespace Microsoft.AspNet.Identity
     {
         DefaultError,
         DuplicateEmail,
-        DuplicateName,
+        DuplicateUserName,
+        DuplicateRoleName,
         ExternalLoginExists,
         InvalidEmail,
         InvalidToken,
@@ -48,6 +60,8 @@ namespace Microsoft.AspNet.Identity
         PasswordRequireUpper,
         PasswordTooShort,
         UserNameTooShort,
+        RoleNameTooShort,
+        EmailTooShort,
         RoleNotFound,
         StoreNotIQueryableRoleStore,
         StoreNotIQueryableUserStore,

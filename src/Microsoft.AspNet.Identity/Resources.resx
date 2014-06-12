@@ -127,7 +127,11 @@
   </data>
   <data name="DuplicateName" xml:space="preserve">
     <value>Name {0} is already taken.</value>
-    <comment>error for duplicate usernames</comment>
+    <comment>error for duplicate names</comment>
+  </data>
+  <data name="EmailTooShort" xml:space="preserve">
+    <value>Email cannot be null or empty.</value>
+    <comment>error when a email is too short</comment>
   </data>
   <data name="ExternalLoginExists" xml:space="preserve">
     <value>A user with that external login already exists.</value>
@@ -184,6 +188,10 @@
   <data name="PropertyTooShort" xml:space="preserve">
     <value>{0} cannot be null or empty.</value>
     <comment>error for empty or null usernames</comment>
+  </data>
+  <data name="RoleNameTooShort" xml:space="preserve">
+    <value>Name cannot be null or empty.</value>
+    <comment>error when a role name is too short</comment>
   </data>
   <data name="RoleNotFound" xml:space="preserve">
     <value>Role {0} does not exist.</value>

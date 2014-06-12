@@ -107,25 +107,25 @@ namespace Microsoft.AspNet.Identity
             else if (manager.Options.User.AllowOnlyAlphanumericNames && !userName.All(IsAlphaNumeric))
             {
                 // If any characters are not letters or digits, its an illegal user name
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.InvalidUserName, userName));
+                errors.Add(String.Format(CultureInfo.CurrentCulture, _resources.GetString(IdentityErrorCode.InvalidUserName), userName));
             }
             else
             {
                 var owner = await manager.FindByNameAsync(userName);
                 if (owner != null && !string.Equals(await manager.GetUserIdAsync(owner), await manager.GetUserIdAsync(user)))
                 {
-                    errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.DuplicateName, userName));
+                    errors.Add(String.Format(CultureInfo.CurrentCulture, _resources.GetString(IdentityErrorCode.DuplicateUserName), userName));
                 }
             }
         }
 
         // make sure email is not empty, valid, and unique
-        private static async Task ValidateEmail(UserManager<TUser> manager, TUser user, List<string> errors)
+        private async Task ValidateEmail(UserManager<TUser> manager, TUser user, List<string> errors)
         {
             var email = await manager.GetEmailAsync(user);
             if (string.IsNullOrWhiteSpace(email))
             {
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.PropertyTooShort, "Email"));
+                errors.Add(_resources.GetString(IdentityErrorCode.EmailTooShort));
                 return;
             }
 #if NET45
@@ -135,14 +135,14 @@ namespace Microsoft.AspNet.Identity
             }
             catch (FormatException)
             {
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.InvalidEmail, email));
+                errors.Add(String.Format(CultureInfo.CurrentCulture, _resources.GetString(IdentityErrorCode.InvalidEmail), email));
                 return;
             }
 #endif
             var owner = await manager.FindByEmailAsync(email);
             if (owner != null && !string.Equals(await manager.GetUserIdAsync(owner), await manager.GetUserIdAsync(user)))
             {
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.DuplicateEmail, email));
+                errors.Add(String.Format(CultureInfo.CurrentCulture, _resources.GetString(IdentityErrorCode.DuplicateEmail), email));
             }
         }
     }

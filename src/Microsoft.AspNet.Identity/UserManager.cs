@@ -1007,7 +1007,7 @@ namespace Microsoft.AspNet.Identity
             }
             if (!await userRoleStore.IsInRoleAsync(user, role, cancellationToken))
             {
-                return new IdentityResult(Resources.UserNotInRole);
+                return new IdentityResult(ErrorStrings.GetString(IdentityErrorCode.UserNotInRole));
             }
             await userRoleStore.RemoveFromRoleAsync(user, role, cancellationToken);
             return await UpdateAsync(user, cancellationToken);

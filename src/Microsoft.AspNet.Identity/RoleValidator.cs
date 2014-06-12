@@ -15,6 +15,17 @@ namespace Microsoft.AspNet.Identity
     /// <typeparam name="TRole"></typeparam>
     public class RoleValidator<TRole> : IRoleValidator<TRole> where TRole : class
     {
+        public RoleValidator(IIdentityResourceManager<IdentityErrorCode> resources)
+        {
+            if (resources == null)
+            {
+                throw new ArgumentNullException("resources");
+            }
+            _resources = resources;
+        }
+
+        private readonly IIdentityResourceManager<IdentityErrorCode> _resources;
+
         /// <summary>
         ///     Validates a role before saving
         /// </summary>
@@ -41,20 +52,20 @@ namespace Microsoft.AspNet.Identity
             return IdentityResult.Success;
         }
 
-        private static async Task ValidateRoleName(RoleManager<TRole> manager, TRole role,
+        private async Task ValidateRoleName(RoleManager<TRole> manager, TRole role,
             ICollection<string> errors)
         {
             var roleName = await manager.GetRoleNameAsync(role);
             if (string.IsNullOrWhiteSpace(roleName))
             {
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.PropertyTooShort, "Name"));
+                errors.Add(_resources.GetString(IdentityErrorCode.RoleNameTooShort));
             }
             else
             {
                 var owner = await manager.FindByNameAsync(roleName);
                 if (owner != null && !string.Equals(await manager.GetRoleIdAsync(owner), await manager.GetRoleIdAsync(role)))
                 {
-                    errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.DuplicateName, roleName));
+                    errors.Add(String.Format(CultureInfo.CurrentCulture, _resources.GetString(IdentityErrorCode.DuplicateRoleName), roleName));
                 }
             }
         }

@@ -59,6 +59,22 @@ namespace Microsoft.AspNet.Identity
         }
 
         /// <summary>
+        /// Email cannot be null or empty.
+        /// </summary>
+        internal static string EmailTooShort
+        {
+            get { return GetString("EmailTooShort"); }
+        }
+
+        /// <summary>
+        /// Email cannot be null or empty.
+        /// </summary>
+        internal static string FormatEmailTooShort()
+        {
+            return GetString("EmailTooShort");
+        }
+
+        /// <summary>
         /// A user with that external login already exists.
         /// </summary>
         internal static string ExternalLoginExists
