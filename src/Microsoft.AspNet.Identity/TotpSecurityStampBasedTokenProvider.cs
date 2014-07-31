@@ -19,6 +19,7 @@ namespace Microsoft.AspNet.Identity
         /// <param name="token"></param>
         /// <param name="manager"></param>
         /// <param name="user"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public virtual Task NotifyAsync(string token, UserManager<TUser> manager, TUser user,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -32,6 +33,7 @@ namespace Microsoft.AspNet.Identity
         /// </summary>
         /// <param name="manager"></param>
         /// <param name="user"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public virtual Task<bool> IsValidProviderForUserAsync(UserManager<TUser> manager, TUser user,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -49,6 +51,7 @@ namespace Microsoft.AspNet.Identity
         /// <param name="purpose"></param>
         /// <param name="manager"></param>
         /// <param name="user"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public virtual async Task<string> GenerateAsync(string purpose, UserManager<TUser> manager, TUser user,
             CancellationToken cancellationToken = default(CancellationToken))
@@ -69,6 +72,7 @@ namespace Microsoft.AspNet.Identity
         /// <param name="token"></param>
         /// <param name="manager"></param>
         /// <param name="user"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public virtual async Task<bool> ValidateAsync(string purpose, string token, UserManager<TUser> manager,
             TUser user, CancellationToken cancellationToken = default(CancellationToken))
@@ -93,6 +97,7 @@ namespace Microsoft.AspNet.Identity
         /// <param name="purpose"></param>
         /// <param name="manager"></param>
         /// <param name="user"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         public virtual async Task<string> GetUserModifierAsync(string purpose, UserManager<TUser> manager, TUser user,
             CancellationToken cancellationToken = default(CancellationToken))

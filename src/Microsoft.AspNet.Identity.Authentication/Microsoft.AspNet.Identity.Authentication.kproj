@@ -20,6 +20,7 @@
     <Content Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataProtectionTokenProvider.cs" />
     <Compile Include="SecurityStampValidator.cs" />
     <Compile Include="HttpAuthenticationManager.cs" />
     <Compile Include="IdentityBuilderExtensions.cs" />
