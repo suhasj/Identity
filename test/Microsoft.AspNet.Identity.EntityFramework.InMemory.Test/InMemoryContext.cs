@@ -46,7 +46,7 @@ namespace Microsoft.AspNet.Identity.EntityFramework.InMemory.Test
             builder.UseInMemoryStore(persist: false);
         }
 
-        protected override void OnModelCreating(ConventionModelBuilder builder)
+        protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<TUser>(b =>
             {
