@@ -32,7 +32,7 @@ namespace Microsoft.AspNet.Identity.EntityFramework.Test
         {
             get
             {
-                return @"Server=(localdb)\v11.0;Database=SqlUserStoreStringTest;Trusted_Connection=True;";
+                return @"Server=(localdb)\v11.0;Database=SqlUserStoreStringTest;Trusted_Connection=True;MultipleActiveResultSets=true";
             }
         }
     }

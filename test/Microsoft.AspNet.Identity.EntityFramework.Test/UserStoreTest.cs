@@ -21,7 +21,7 @@ namespace Microsoft.AspNet.Identity.EntityFramework.Test
     [TestCaseOrderer("Microsoft.AspNet.Identity.Test.PriorityOrderer", "Microsoft.AspNet.Identity.EntityFramework.Test")]
     public class UserStoreTest : UserManagerTestBase<IdentityUser, IdentityRole>
     {
-        private const string ConnectionString = @"Server=(localdb)\mssqllocaldb;Database=UserStoreTest;Trusted_Connection=True;";
+        private const string ConnectionString = @"Server=(localdb)\mssqllocaldb;Database=UserStoreTest;Trusted_Connection=True;MultipleActiveResultSets=true";
 
         public class ApplicationUser : IdentityUser { }
 
