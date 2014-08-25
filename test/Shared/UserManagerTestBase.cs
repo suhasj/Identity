@@ -1238,7 +1238,6 @@ namespace Microsoft.AspNet.Identity.Test
             Assert.Null(messageService.Message);
             IdentityResultAssert.IsSuccess(await manager.NotifyTwoFactorTokenAsync(user, factorId, token));
             Assert.NotNull(messageService.Message);
-            Assert.Equal(token, messageService.Message.Subject);
             Assert.Equal(token, messageService.Message.Body);
             Assert.True(await manager.VerifyTwoFactorTokenAsync(user, factorId, token));
         }
@@ -1478,8 +1477,8 @@ namespace Microsoft.AspNet.Identity.Test
         public async Task VerifyTokenFromWrongTokenProviderFails()
         {
             var manager = CreateManager();
-            manager.RegisterTwoFactorProvider("PhoneCode", new SmsTokenProvider());
-            manager.RegisterTwoFactorProvider("EmailCode", new EmailTokenProvider());
+            manager.RegisterTwoFactorProvider("PhoneCode", new PhoneNumberTokenProvider<TUser>());
+            manager.RegisterTwoFactorProvider("EmailCode", new EmailTokenProvider<TUser>());
             var user = CreateTestUser();
             user.PhoneNumber = "4251234567";
             IdentityResultAssert.IsSuccess(await manager.CreateAsync(user));
@@ -1493,7 +1492,7 @@ namespace Microsoft.AspNet.Identity.Test
         {
             var manager = CreateManager();
             const string factorId = "PhoneCode";
-            manager.RegisterTwoFactorProvider(factorId, new SmsTokenProvider());
+            manager.RegisterTwoFactorProvider(factorId, new PhoneNumberTokenProvider<TUser>());
             var user = CreateTestUser();
             user.PhoneNumber = "4251234567";
             IdentityResultAssert.IsSuccess(await manager.CreateAsync(user));
