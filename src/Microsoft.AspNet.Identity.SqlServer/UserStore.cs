@@ -73,7 +73,7 @@ namespace Microsoft.AspNet.Identity.SqlServer
 
         protected virtual Task<TUser> GetUserAggregate(Expression<Func<TUser, bool>> filter, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return Task.FromResult(Users.FirstOrDefault(filter));
+            return Users.FirstOrDefaultAsync(filter);
             // TODO: return Users.FirstOrDefaultAsync(filter, cancellationToken);
                 //Include(u => u.Roles)
                 //.Include(u => u.Claims)

@@ -28,7 +28,7 @@ namespace Microsoft.AspNet.Identity.SqlServer.Test
     [TestCaseOrderer("Microsoft.AspNet.Identity.Test.PriorityOrderer", "Microsoft.AspNet.Identity.SqlServer.Test")]
     public class UserStoreStringKeyTest : SqlStoreTestBase<StringUser, StringRole, string>
     {
-        private readonly string _connectionString = @"Server=(localdb)\v11.0;Database=SqlUserStoreStringTest" + DateTime.Now.Month + "-" + DateTime.Now.Day + "-" + DateTime.Now.Year + ";Trusted_Connection=True;";
+        private readonly string _connectionString = @"Server=(localdb)\v11.0;Database=SqlUserStoreStringTest" + DateTime.Now.Month + "-" + DateTime.Now.Day + "-" + DateTime.Now.Year + ";Trusted_Connection=True;MultipleActiveResultSets=true";
 
         public override string ConnectionString
         {
