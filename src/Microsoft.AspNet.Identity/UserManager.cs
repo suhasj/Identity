@@ -587,7 +587,7 @@ namespace Microsoft.AspNet.Identity
             var hash = await passwordStore.GetPasswordHashAsync(user, cancellationToken);
             if (hash != null)
             {
-                return new IdentityResult(Resources.UserAlreadyHasPassword);
+                return IdentityResult.Failed(IdentityFailure.UserAlreadyHasPassword);
             }
             var result = await UpdatePasswordInternal(passwordStore, user, password, cancellationToken);
             if (!result.Succeeded)
@@ -623,7 +623,7 @@ namespace Microsoft.AspNet.Identity
                 }
                 return await UpdateAsync(user, cancellationToken);
             }
-            return IdentityResult.Failed(Resources.PasswordMismatch);
+            return IdentityResult.Failed(IdentityFailure.PasswordMismatch);
         }
 
         /// <summary>
@@ -758,7 +758,7 @@ namespace Microsoft.AspNet.Identity
             // Make sure the token is valid and the stamp matches
             if (!await VerifyUserTokenAsync(user, "ResetPassword", token, cancellationToken))
             {
-                return IdentityResult.Failed(Resources.InvalidToken);
+                return IdentityResult.Failed(IdentityFailure.InvalidToken);
             }
             var passwordStore = GetPasswordStore();
             var result = await UpdatePasswordInternal(passwordStore, user, newPassword, cancellationToken);
@@ -869,7 +869,7 @@ namespace Microsoft.AspNet.Identity
             var existingUser = await FindByLoginAsync(login.LoginProvider, login.ProviderKey, cancellationToken);
             if (existingUser != null)
             {
-                return IdentityResult.Failed(Resources.ExternalLoginExists);
+                return IdentityResult.Failed(IdentityFailure.LoginAlreadyAssociated);
             }
             await loginStore.AddLoginAsync(user, login, cancellationToken);
             return await UpdateAsync(user, cancellationToken);
@@ -1046,7 +1046,7 @@ namespace Microsoft.AspNet.Identity
             var userRoles = await userRoleStore.GetRolesAsync(user, cancellationToken);
             if (userRoles.Contains(role))
             {
-                return new IdentityResult(Resources.UserAlreadyInRole);
+                return IdentityResult.Failed(IdentityFailure.UserAlreadyInRole);
             }
             await userRoleStore.AddToRoleAsync(user, role, cancellationToken);
             return await UpdateAsync(user, cancellationToken);
@@ -1077,7 +1077,7 @@ namespace Microsoft.AspNet.Identity
             {
                 if (userRoles.Contains(role))
                 {
-                    return new IdentityResult(Resources.UserAlreadyInRole);
+                    return IdentityResult.Failed(IdentityFailure.UserAlreadyInRole);
                 }
                 await userRoleStore.AddToRoleAsync(user, role, cancellationToken);
             }
@@ -1102,7 +1102,7 @@ namespace Microsoft.AspNet.Identity
             }
             if (!await userRoleStore.IsInRoleAsync(user, role, cancellationToken))
             {
-                return new IdentityResult(Resources.UserNotInRole);
+                return IdentityResult.Failed(IdentityFailure.UserNotInRole);
             }
             await userRoleStore.RemoveFromRoleAsync(user, role, cancellationToken);
             return await UpdateAsync(user, cancellationToken);
@@ -1132,7 +1132,7 @@ namespace Microsoft.AspNet.Identity
             {
                 if (!await userRoleStore.IsInRoleAsync(user, role, cancellationToken))
                 {
-                    return new IdentityResult(Resources.UserNotInRole);
+                    return IdentityResult.Failed(IdentityFailure.UserNotInRole);
                 }
                 await userRoleStore.RemoveFromRoleAsync(user, role, cancellationToken);
             }
@@ -1292,7 +1292,7 @@ namespace Microsoft.AspNet.Identity
             }
             if (!await VerifyUserTokenAsync(user, "Confirmation", token, cancellationToken))
             {
-                return IdentityResult.Failed(Resources.InvalidToken);
+                return IdentityResult.Failed(IdentityFailure.InvalidToken);
             }
             await store.SetEmailConfirmedAsync(user, true, cancellationToken);
             return await UpdateAsync(user, cancellationToken);
@@ -1386,7 +1386,7 @@ namespace Microsoft.AspNet.Identity
             }
             if (!await VerifyChangePhoneNumberTokenAsync(user, token, phoneNumber))
             {
-                return IdentityResult.Failed(Resources.InvalidToken);
+                return IdentityResult.Failed(IdentityFailure.InvalidToken);
             }
             await store.SetPhoneNumberAsync(user, phoneNumber, cancellationToken);
             await store.SetPhoneNumberConfirmedAsync(user, true, cancellationToken);
@@ -1831,7 +1831,7 @@ namespace Microsoft.AspNet.Identity
             }
             if (!await store.GetLockoutEnabledAsync(user, cancellationToken).ConfigureAwait((false)))
             {
-                return IdentityResult.Failed(Resources.LockoutNotEnabled);
+                return IdentityResult.Failed(IdentityFailure.LockoutForUserNotEnabled);
             }
             await store.SetLockoutEndDateAsync(user, lockoutEnd, cancellationToken);
             return await UpdateAsync(user, cancellationToken);

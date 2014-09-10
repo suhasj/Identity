@@ -37,13 +37,13 @@ namespace Microsoft.AspNet.Identity
             {
                 throw new ArgumentNullException("user");
             }
-            var errors = new List<string>();
+            var errors = new List<IdentityFailure>();
             await ValidateUserName(manager, user, errors);
             if (manager.Options.User.RequireUniqueEmail)
             {
                 await ValidateEmail(manager, user, errors);
             }
-            return errors.Count > 0 ? IdentityResult.Failed(errors.ToArray()) : IdentityResult.Success;
+            return errors.Count > 0 ? new IdentityResult(errors) : IdentityResult.Success;
         }
 
         // TODO: Revisit extensibility for Validators
@@ -88,17 +88,16 @@ namespace Microsoft.AspNet.Identity
             return IsUpper(c) || IsLower(c) || IsDigit(c) || c == '@' || c == '_' || c == '.';
         }
 
-        private async Task ValidateUserName(UserManager<TUser> manager, TUser user, ICollection<string> errors)
+        private async Task ValidateUserName(UserManager<TUser> manager, TUser user, ICollection<IdentityFailure> errors)
         {
             var userName = await manager.GetUserNameAsync(user);
             if (string.IsNullOrWhiteSpace(userName))
             {
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.PropertyTooShort, "UserName"));
+                errors.Add(IdentityFailure.UserNameTooShort);
             }
             else if (manager.Options.User.AllowOnlyAlphanumericNames && !userName.All(IsAlphaNumeric))
             {
-                // If any characters are not letters or digits, its an illegal user name
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.InvalidUserName, userName));
+                errors.Add(IdentityFailure.UserNameInvalid);
             }
             else
             {
@@ -106,18 +105,18 @@ namespace Microsoft.AspNet.Identity
                 if (owner != null && 
                     !string.Equals(await manager.GetUserIdAsync(owner), await manager.GetUserIdAsync(user)))
                 {
-                    errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.DuplicateName, userName));
+                    errors.Add(IdentityFailure.DuplicateUserName);
                 }
             }
         }
 
         // make sure email is not empty, valid, and unique
-        private static async Task ValidateEmail(UserManager<TUser> manager, TUser user, List<string> errors)
+        private static async Task ValidateEmail(UserManager<TUser> manager, TUser user, List<IdentityFailure> errors)
         {
             var email = await manager.GetEmailAsync(user);
             if (string.IsNullOrWhiteSpace(email))
             {
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.PropertyTooShort, "Email"));
+                errors.Add(IdentityFailure.EmailInvalid);
                 return;
             }
 #if ASPNET50
@@ -127,7 +126,7 @@ namespace Microsoft.AspNet.Identity
             }
             catch (FormatException)
             {
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.InvalidEmail, email));
+                errors.Add(IdentityFailure.EmailInvalid);
                 return;
             }
 #endif
@@ -135,7 +134,7 @@ namespace Microsoft.AspNet.Identity
             if (owner != null && 
                 !string.Equals(await manager.GetUserIdAsync(owner), await manager.GetUserIdAsync(user)))
             {
-                errors.Add(String.Format(CultureInfo.CurrentCulture, Resources.DuplicateEmail, email));
+                errors.Add(IdentityFailure.DuplicateEmail);
             }
         }
     }

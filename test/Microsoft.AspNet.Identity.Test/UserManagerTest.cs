@@ -765,7 +765,7 @@ namespace Microsoft.AspNet.Identity.Test
 
             public Task<IdentityResult> ValidateAsync(string password, UserManager<TUser> manager, CancellationToken cancellationToken = default(CancellationToken))
             {
-                return Task.FromResult(IdentityResult.Failed(ErrorMessage));
+                return Task.FromResult(new IdentityResult());
             }
         }
 
