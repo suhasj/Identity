@@ -266,7 +266,7 @@ namespace Microsoft.AspNet.Identity.Test
             var result = await userManager.AddToRolesAsync(user, roles);
 
             // Assert
-            IdentityResultAssert.IsFailure(result, "User already in role.");
+            IdentityResultAssert.IsFailure(result, IdentityFailure.UserAlreadyInRole);
             store.VerifyAll();
         }
 
@@ -328,7 +328,7 @@ namespace Microsoft.AspNet.Identity.Test
             var result = await userManager.RemoveFromRolesAsync(user, roles);
 
             // Assert
-            IdentityResultAssert.IsFailure(result, "User is not in role.");
+            IdentityResultAssert.IsFailure(result, IdentityFailure.UserNotInRole);
             store.VerifyAll();
         }
 
@@ -385,7 +385,7 @@ namespace Microsoft.AspNet.Identity.Test
                 .Returns(Task.FromResult(0))
                 .Verifiable();
             store.Setup(s => s.UpdateAsync(user, CancellationToken.None)).Returns(Task.FromResult(0)).Verifiable();
-            var userManager = MockHelpers.TestUserManager<TestUser>(store.Object);
+            var userManager = MockHelpers.TestUserManager(store.Object);
 
             // Act
             var result = await userManager.RemoveClaimsAsync(user, claims);
@@ -406,7 +406,7 @@ namespace Microsoft.AspNet.Identity.Test
                 .Returns(Task.FromResult(0))
                 .Verifiable();
             store.Setup(s => s.UpdateAsync(user, CancellationToken.None)).Returns(Task.FromResult(0)).Verifiable();
-            var userManager = MockHelpers.TestUserManager<TestUser>(store.Object);
+            var userManager = MockHelpers.TestUserManager(store.Object);
 
             // Act
             var result = await userManager.RemoveClaimAsync(user, claim);
@@ -761,7 +761,7 @@ namespace Microsoft.AspNet.Identity.Test
 
         private class BadPasswordValidator<TUser> : IPasswordValidator<TUser> where TUser : class
         {
-            public const string ErrorMessage = "I'm Bad.";
+            public const IdentityFailure ErrorMessage = IdentityFailure.Unknown;
 
             public Task<IdentityResult> ValidateAsync(string password, UserManager<TUser> manager, CancellationToken cancellationToken = default(CancellationToken))
             {

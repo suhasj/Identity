@@ -331,9 +331,9 @@ namespace IdentitySample
 
         private void AddErrors(IdentityResult result)
         {
-            foreach (var error in result.Errors)
+            foreach (var failure in result.Failures)
             {
-                ModelState.AddModelError("", error);
+                ModelState.AddModelError("", ApplicationErrors.GetDescription(failure));
             }
         }
 
