@@ -48,7 +48,8 @@ namespace IdentitySamples
                             options.Password.RequireLowercase = false;
                             options.Password.RequireUppercase = false;
                             options.Password.RequireNonLetterOrDigit = false;
-                        });
+                        })
+                        .AddFailureDescriber<ApplicationFailureDescriber>();
 
                 // Add MVC services to the services container
                 services.AddMvc();

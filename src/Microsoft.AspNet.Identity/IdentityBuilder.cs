@@ -34,6 +34,12 @@ namespace Microsoft.AspNet.Identity
             return AddInstance(func);
         }
 
+        public IdentityBuilder<TUser, TRole> AddFailureDescriber<TDescriber>() where TDescriber : IdentityFailureDescriber
+        {
+            Services.AddScoped<IdentityFailureDescriber, TDescriber>();
+            return this;
+        }
+
         public IdentityBuilder<TUser, TRole> AddPasswordValidator(Func<IPasswordValidator<TUser>> func)
         {
             return AddInstance(func);

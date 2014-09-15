@@ -97,7 +97,7 @@ namespace Microsoft.AspNet.Identity
             }
             else if (manager.Options.User.AllowOnlyAlphanumericNames && !userName.All(IsAlphaNumeric))
             {
-                errors.Add(IdentityFailure.UserNameInvalid);
+                errors.Add(IdentityFailure.UserNameHasInvalidCharacters);
             }
             else
             {

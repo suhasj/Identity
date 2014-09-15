@@ -110,17 +110,17 @@ namespace Microsoft.AspNet.Identity
             return null;
         }
 
-        public virtual async Task<SignInStatus> PasswordSignInAsync(string userName, string password, 
+        public virtual async Task<IdentityResult> PasswordSignInAsync(string userName, string password, 
             bool isPersistent, bool shouldLockout, CancellationToken cancellationToken = default(CancellationToken))
         {
             var user = await UserManager.FindByNameAsync(userName, cancellationToken);
             if (user == null)
             {
-                return SignInStatus.Failure;
+                return IdentityResult.Failed(IdentityFailure.UserNameNotFound);
             }
             if (await IsLockedOut(user, cancellationToken))
             {
-                return SignInStatus.LockedOut;
+                return IdentityResult.Failed(IdentityFailure.UserLockedOut);
             }
             if (await UserManager.CheckPasswordAsync(user, password, cancellationToken))
             {
@@ -132,10 +132,10 @@ namespace Microsoft.AspNet.Identity
                 await UserManager.AccessFailedAsync(user, cancellationToken);
                 if (await UserManager.IsLockedOutAsync(user, cancellationToken))
                 {
-                    return SignInStatus.LockedOut;
+                    return IdentityResult.Failed(IdentityFailure.UserLockedOut);
                 }
             }
-            return SignInStatus.Failure;
+            return IdentityResult.Failed(IdentityFailure.PasswordMismatch);
         }
 
         public virtual async Task<bool> SendTwoFactorCodeAsync(string provider,
@@ -178,51 +178,51 @@ namespace Microsoft.AspNet.Identity
             return Task.FromResult(0);
         }
 
-        public virtual async Task<SignInStatus> TwoFactorSignInAsync(string provider, string code, bool isPersistent,
+        public virtual async Task<IdentityResult> TwoFactorSignInAsync(string provider, string code, bool isPersistent,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var userId = await AuthenticationManager.RetrieveUserId();
             if (userId == null)
             {
-                return SignInStatus.Failure;
+                return IdentityResult.Failed(IdentityFailure.TwoFactorVerificationFailed);
             }
             var user = await UserManager.FindByIdAsync(userId, cancellationToken);
             if (user == null)
             {
-                return SignInStatus.Failure;
+                return IdentityResult.Failed(IdentityFailure.TwoFactorVerificationFailed);
             }
             if (await IsLockedOut(user, cancellationToken))
             {
-                return SignInStatus.LockedOut;
+                return IdentityResult.Failed(IdentityFailure.UserLockedOut);
             }
             if (await UserManager.VerifyTwoFactorTokenAsync(user, provider, code, cancellationToken))
             {
                 // When token is verified correctly, clear the access failed count used for lockout
                 await UserManager.ResetAccessFailedCountAsync(user, cancellationToken);
                 await SignInAsync(user, isPersistent);
-                return SignInStatus.Success;
+                return IdentityResult.Success;
             }
             // If the token is incorrect, record the failure which also may cause the user to be locked out
             await UserManager.AccessFailedAsync(user, cancellationToken);
-            return SignInStatus.Failure;
+            return IdentityResult.Failed(IdentityFailure.TwoFactorVerificationFailed);
         }
 
-        public async Task<SignInStatus> ExternalLoginSignInAsync(string loginProvider, string providerKey, bool isPersistent,
+        public async Task<IdentityResult> ExternalLoginSignInAsync(string loginProvider, string providerKey, bool isPersistent,
             CancellationToken cancellationToken = default(CancellationToken))
         {
             var user = await UserManager.FindByLoginAsync(loginProvider, providerKey, cancellationToken);
             if (user == null)
             {
-                return SignInStatus.Failure;
+                return IdentityResult.Failed(IdentityFailure.LoginNotFound);
             }
             if (await IsLockedOut(user, cancellationToken))
             {
-                return SignInStatus.LockedOut;
+                return IdentityResult.Failed(IdentityFailure.UserLockedOut);
             }
             return await SignInOrTwoFactorAsync(user, isPersistent, cancellationToken);
         }
 
-        private async Task<SignInStatus> SignInOrTwoFactorAsync(TUser user, bool isPersistent,
+        private async Task<IdentityResult> SignInOrTwoFactorAsync(TUser user, bool isPersistent,
             CancellationToken cancellationToken)
         {
             if (UserManager.SupportsUserTwoFactor && await UserManager.GetTwoFactorEnabledAsync(user))
@@ -232,11 +232,11 @@ namespace Microsoft.AspNet.Identity
                     // Store the userId for use after two factor check
                     var userId = await UserManager.GetUserIdAsync(user, cancellationToken);
                     await AuthenticationManager.StoreUserId(userId);
-                    return SignInStatus.RequiresVerification;
+                    return IdentityResult.Failed(IdentityFailure.SignInRequiresTwoFactor);
                 }
             }
             await SignInAsync(user, isPersistent, cancellationToken);
-            return SignInStatus.Success;
+            return IdentityResult.Success;
         }
     }
 }
