@@ -8,6 +8,7 @@ using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.OptionsModel;
 using Moq;
 using System;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -131,7 +132,8 @@ namespace Microsoft.AspNet.Identity.Authentication.Test
             var result = await helper.PasswordSignInAsync(user.UserName, "bogus", false, false);
 
             // Assert
-            Assert.Equal(SignInStatus.LockedOut, result);
+            IdentityResultAssert.IsFailure(result);
+            Assert.Equal(IdentityFailure.UserLockedOut, result.Failures.First());
             manager.VerifyAll();
         }
             
@@ -165,7 +167,7 @@ namespace Microsoft.AspNet.Identity.Authentication.Test
             var result = await helper.PasswordSignInAsync(user.UserName, "password", isPersistent, false);
 
             // Assert
-            Assert.Equal(SignInStatus.Success, result);
+            IdentityResultAssert.IsSuccess(result);
             manager.VerifyAll();
             context.VerifyAll();
             response.VerifyAll();
@@ -200,7 +202,7 @@ namespace Microsoft.AspNet.Identity.Authentication.Test
             var result = await helper.PasswordSignInAsync(user.UserName, "password", false, false);
 
             // Assert
-            Assert.Equal(SignInStatus.Success, result);
+            IdentityResultAssert.IsSuccess(result);
             manager.VerifyAll();
             context.VerifyAll();
             response.VerifyAll();
@@ -241,7 +243,8 @@ namespace Microsoft.AspNet.Identity.Authentication.Test
             var result = await helper.PasswordSignInAsync(user.UserName, "password", false, false);
 
             // Assert
-            Assert.Equal(SignInStatus.RequiresVerification, result);
+            IdentityResultAssert.IsFailure(result);
+            Assert.Equal(IdentityFailure.SignInRequiresTwoFactor, result.Failures.First());
             manager.VerifyAll();
             context.VerifyAll();
             response.VerifyAll();
@@ -284,7 +287,7 @@ namespace Microsoft.AspNet.Identity.Authentication.Test
             var result = await helper.ExternalLoginSignInAsync(loginProvider, providerKey, isPersistent);
 
             // Assert
-            Assert.Equal(SignInStatus.Success, result);
+            IdentityResultAssert.IsSuccess(result);
             manager.VerifyAll();
             context.VerifyAll();
             response.VerifyAll();
@@ -334,7 +337,7 @@ namespace Microsoft.AspNet.Identity.Authentication.Test
             var result = await helper.TwoFactorSignInAsync(provider, code, isPersistent);
 
             // Assert
-            Assert.Equal(SignInStatus.Success, result);
+            IdentityResultAssert.IsSuccess(result);
             manager.VerifyAll();
             context.VerifyAll();
             response.VerifyAll();
@@ -404,7 +407,7 @@ namespace Microsoft.AspNet.Identity.Authentication.Test
             var result = await helper.PasswordSignInAsync(user.UserName, "password", isPersistent, false);
 
             // Assert
-            Assert.Equal(SignInStatus.Success, result);
+            IdentityResultAssert.IsSuccess(result);
             manager.VerifyAll();
             context.VerifyAll();
             response.VerifyAll();
@@ -464,7 +467,8 @@ namespace Microsoft.AspNet.Identity.Authentication.Test
             var result = await helper.PasswordSignInAsync(user.UserName, "bogus", false, false);
 
             // Assert
-            Assert.Equal(SignInStatus.Failure, result);
+            IdentityResultAssert.IsFailure(result);
+            Assert.Equal(IdentityFailure.PasswordMismatch, result.Failures.First());
             manager.VerifyAll();
         }
 
@@ -488,7 +492,8 @@ namespace Microsoft.AspNet.Identity.Authentication.Test
             var result = await helper.PasswordSignInAsync("bogus", "bogus", false, false);
 
             // Assert
-            Assert.Equal(SignInStatus.Failure, result);
+            IdentityResultAssert.IsFailure(result);
+            Assert.Equal(IdentityFailure.UserNameNotFound, result.Failures.First());
             manager.VerifyAll();
         }
 
@@ -522,7 +527,8 @@ namespace Microsoft.AspNet.Identity.Authentication.Test
             var result = await helper.PasswordSignInAsync(user.UserName, "bogus", false, true);
 
             // Assert
-            Assert.Equal(SignInStatus.LockedOut, result);
+            IdentityResultAssert.IsFailure(result);
+            Assert.Equal(IdentityFailure.UserLockedOut, result.Failures.First());
             manager.VerifyAll();
         }
 #endif

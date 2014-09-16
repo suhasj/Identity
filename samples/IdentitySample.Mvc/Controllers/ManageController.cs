@@ -7,17 +7,16 @@ using System.Threading.Tasks;
 namespace IdentitySample
 {
     [Authorize]
-    public class ManageController : Controller
+    public class ManageController(UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager,
+        IdentityFailureDescriber failureDescriber)
+        : Controller
     {
-        public ManageController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
-        {
-            UserManager = userManager;
-            SignInManager = signInManager;
-        }
+        public UserManager<ApplicationUser> UserManager { get; } = userManager;
 
-        public UserManager<ApplicationUser> UserManager { get; private set; }
+        public SignInManager<ApplicationUser> SignInManager { get; } = signInManager;
 
-        public SignInManager<ApplicationUser> SignInManager { get; private set; }
+        public IdentityFailureDescriber FailureDescriber { get; } = failureDescriber;
 
         //
         // GET: /Account/Index
@@ -326,14 +325,12 @@ namespace IdentitySample
         //}
 
         #region Helpers
-        // Used for XSRF protection when adding external logins
-        //private const string XsrfKey = "XsrfId";
 
         private void AddErrors(IdentityResult result)
         {
             foreach (var failure in result.Failures)
             {
-                ModelState.AddModelError("", ApplicationErrors.GetDescription(failure));
+                ModelState.AddModelError("", FailureDescriber.Describe(failure));
             }
         }
 
