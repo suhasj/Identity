@@ -129,7 +129,7 @@ namespace IdentitySamples
                     options.Password.RequireLowercase = false;
                     options.Password.RequireUppercase = false;
                     options.Password.RequireNonLetterOrDigit = false;
-                    options.SecurityStampValidationInterval = TimeSpan.Zero;
+                    options.SecurityStampValidationInterval = TimeSpan.FromMinutes(20);
                 });
                 services.SetupOptions<GoogleAuthenticationOptions>(options =>
                 {
@@ -141,12 +141,6 @@ namespace IdentitySamples
                     ClientId = "514485782433-fr3ml6sq0imvhi8a7qir0nb46oumtgn9.apps.googleusercontent.com",
                     ClientSecret = "V2nDD9SkFbvLTqAUBWBBxYAL"
                 });
-                services.SetupOptions<FacebookAuthenticationOptions>(options =>
-                {
-                    options.AppId = "901611409868059";
-                    options.AppSecret = "4aa3c530297b1dcebc8860334b39668b";
-                });
-
                 services.SetupOptions<FacebookAuthenticationOptions>(options =>
                 {
                     options.AppId = "901611409868059";
@@ -204,13 +198,6 @@ namespace IdentitySamples
                     {
                         Type = typeof(CookieAuthenticationMiddleware),
                         Args = new[] {
-                            idOptions.ApplicationCookie
-                        }
-                    });
-                    options.Pipeline.Add(new MiddlewareOptions
-                    {
-                        Type = typeof(CookieAuthenticationMiddleware),
-                        Args = new[] {
                             idOptions.ExternalCookie
                         }
                     });
@@ -230,11 +217,19 @@ namespace IdentitySamples
                     });
                     options.Pipeline.Add(new MiddlewareOptions
                     {
+                        Type = typeof(CookieAuthenticationMiddleware),
+                        Args = new[] {
+                            idOptions.ApplicationCookie
+                        }
+                    });
+                    options.Pipeline.Add(new MiddlewareOptions
+                    {
                         Type = typeof(GoogleAuthenticationMiddleware),
                         Args = new[] {
                             new GoogleAuthenticationOptions {
                                 ClientId = "514485782433-fr3ml6sq0imvhi8a7qir0nb46oumtgn9.apps.googleusercontent.com",
-                                ClientSecret = "V2nDD9SkFbvLTqAUBWBBxYAL"
+                                ClientSecret = "V2nDD9SkFbvLTqAUBWBBxYAL",
+                                SignInAsAuthenticationType = idOptions.ExternalCookie.AuthenticationType
                             }
                         }
                     });
@@ -244,7 +239,8 @@ namespace IdentitySamples
                         Args = new[] {
                             new FacebookAuthenticationOptions {
                                 AppId = "901611409868059",
-                                AppSecret = "4aa3c530297b1dcebc8860334b39668b"
+                                AppSecret = "4aa3c530297b1dcebc8860334b39668b",
+                                SignInAsAuthenticationType = idOptions.ExternalCookie.AuthenticationType
                             }
                         }
                     });
@@ -254,7 +250,8 @@ namespace IdentitySamples
                         Args = new[] {
                             new TwitterAuthenticationOptions {
                                 ConsumerKey = "BSdJJ0CrDuvEhpkchnukXZBUv",
-                                ConsumerSecret = "xKUNuKhsRdHD03eLn67xhPAyE1wFFEndFo1X2UJaK2m1jdAxf4"
+                                ConsumerSecret = "xKUNuKhsRdHD03eLn67xhPAyE1wFFEndFo1X2UJaK2m1jdAxf4",
+                                SignInAsAuthenticationType = idOptions.ExternalCookie.AuthenticationType
                             }
                         }
                     });
@@ -264,7 +261,7 @@ namespace IdentitySamples
                 services.AddMvc();
             });
 
-            app.SetDefaultSignInAsAuthenticationType(idOptions.DefaultSignInAsAuthenticationType);
+            app.SetDefaultSignInAsAuthenticationType(idOptions.ExternalCookie.AuthenticationType);
             app.UsePipeline();
 
             /* Error page middleware displays a nice formatted HTML page for any unhandled exceptions in the request pipeline.
