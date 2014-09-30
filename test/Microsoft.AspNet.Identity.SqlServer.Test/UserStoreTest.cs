@@ -66,7 +66,7 @@ namespace Microsoft.AspNet.Identity.SqlServer.Test
             builder.UseServices(services =>
             {
                 services.AddEntityFramework().AddSqlServer();
-                services.AddIdentitySqlServer<ApplicationDbContext, ApplicationUser>();
+                services.AddDefaultIdentity<ApplicationDbContext, ApplicationUser, IdentityRole>();
                 services.SetupOptions<DbContextOptions>(options => 
                     options.UseSqlServer(ConnectionString));
             });
