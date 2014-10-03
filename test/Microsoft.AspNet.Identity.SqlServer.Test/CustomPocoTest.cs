@@ -49,7 +49,7 @@ namespace Microsoft.AspNet.Identity.SqlServer.Test
             var services = new ServiceCollection();
             services.Add(OptionsServices.GetDefaultServices());
             services.AddEntityFramework().AddSqlServer();
-            services.SetupOptions<DbContextOptions>(options => options.UseSqlServer(ConnectionString));
+            services.ConfigureOptions<DbContextOptions>(options => options.UseSqlServer(ConnectionString));
             var serviceProvider = services.BuildServiceProvider();
             return new CustomDbContext<TKey>(serviceProvider);
         }

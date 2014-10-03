@@ -22,7 +22,7 @@ namespace Microsoft.AspNet.Identity.SqlServer.Test
             var services = new ServiceCollection();
             services.Add(OptionsServices.GetDefaultServices());
             services.AddEntityFramework().AddSqlServer();
-            services.SetupOptions<DbContextOptions>(options => options.UseSqlServer(ConnectionString));
+            services.ConfigureOptions<DbContextOptions>(options => options.UseSqlServer(ConnectionString));
             var serviceProvider = services.BuildServiceProvider();
             var db = new IdentityDbContext(serviceProvider, 
                 serviceProvider.GetService<IOptionsAccessor<DbContextOptions>>().Options);
@@ -56,7 +56,7 @@ namespace Microsoft.AspNet.Identity.SqlServer.Test
             {
                 services.AddEntityFramework().AddSqlServer();
                 services.AddIdentitySqlServer();
-                services.SetupOptions<DbContextOptions>(options =>
+                services.ConfigureOptions<DbContextOptions>(options =>
                     options.UseSqlServer(ConnectionString));
                 // todo: constructor resolution doesn't work well with IdentityDbContext since it has 4 constructors
                 services.AddInstance(context);

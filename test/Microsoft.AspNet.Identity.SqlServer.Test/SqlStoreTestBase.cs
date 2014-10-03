@@ -47,7 +47,7 @@ namespace Microsoft.AspNet.Identity.SqlServer.Test
             var services = new ServiceCollection();
             services.AddEntityFramework().AddSqlServer();
             services.Add(OptionsServices.GetDefaultServices());
-            services.SetupOptions<DbContextOptions>(options =>
+            services.ConfigureOptions<DbContextOptions>(options =>
                 options.UseSqlServer(ConnectionString));
             var serviceProvider = services.BuildServiceProvider();
             var db = new ApplicationDbContext(serviceProvider,
@@ -60,7 +60,7 @@ namespace Microsoft.AspNet.Identity.SqlServer.Test
             var services = new ServiceCollection();
             services.AddEntityFramework().AddSqlServer();
             services.Add(OptionsServices.GetDefaultServices());
-            services.SetupOptions<DbContextOptions>(options =>
+            services.ConfigureOptions<DbContextOptions>(options =>
                 options.UseSqlServer(ConnectionString));
             var serviceProvider = services.BuildServiceProvider();
             var db = new ApplicationDbContext(serviceProvider,
@@ -113,7 +113,7 @@ namespace Microsoft.AspNet.Identity.SqlServer.Test
             {
                 services.AddEntityFramework().AddSqlServer();
                 services.AddIdentitySqlServer<ApplicationDbContext, TUser, TRole, TKey>();
-                services.SetupOptions<DbContextOptions>(options =>
+                services.ConfigureOptions<DbContextOptions>(options =>
                     options.UseSqlServer(ConnectionString));
             });
 
@@ -139,7 +139,8 @@ namespace Microsoft.AspNet.Identity.SqlServer.Test
             builder.UseServices(services =>
             {
                 services.AddEntityFramework().AddSqlServer();
-                services.AddIdentitySqlServer<ApplicationDbContext, TUser, TRole, TKey>().SetupOptions(options =>
+                services.AddIdentitySqlServer<ApplicationDbContext, TUser, TRole, TKey>();
+                services.ConfigureIdentity(options =>
                 {
                     options.Password.RequiredLength = 1;
                     options.Password.RequireLowercase = false;
@@ -148,7 +149,7 @@ namespace Microsoft.AspNet.Identity.SqlServer.Test
                     options.Password.RequireDigit = false;
                     options.User.UserNameValidationRegex = null;
                 });
-                services.SetupOptions<DbContextOptions>(options =>
+                services.ConfigureOptions<DbContextOptions>(options =>
                     options.UseSqlServer(ConnectionString));
             });
 
