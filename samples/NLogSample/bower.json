@@ -1,0 +1,22 @@
+﻿{
+    "name": "ASP.NET Application",
+    "private": true,
+    "dependencies": {
+        "bootstrap": "~3.0.0",
+        "jquery": "~1.10.2",
+        "jquery.validation": "~1.13.0"
+    },
+    "exportsOverride": {
+        "bootstrap": {
+            "js": "dist/**/*.js",
+            "css": "dist/**/*.css",
+            "fonts": "**/*.{eot,svg,ttf,woff}"
+        },
+        "jquery": {
+            "js": "dist/*.{js,map}"
+        },
+        "jquery.validate": {
+            "js": "dist/*.{js,map}"
+        }
+    }
+}
