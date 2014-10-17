@@ -1,0 +1,6 @@
+bower_components/
+node_modules/
+wwwroot/css
+wwwroot/lib
+wwwroot/js
+wwwroot/fonts
