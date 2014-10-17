@@ -12,6 +12,7 @@ using Microsoft.Framework.DependencyInjection;
 using Microsoft.Framework.OptionsModel;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Framework.Logging;
 
 namespace Microsoft.AspNet.Identity
 {
@@ -21,8 +22,10 @@ namespace Microsoft.AspNet.Identity
     /// <typeparam name="TUser"></typeparam>
     public class SignInManager<TUser> where TUser : class
     {
+        private readonly ILogger _logger;
+
         public SignInManager(UserManager<TUser> userManager, IContextAccessor<HttpContext> contextAccessor, 
-            IClaimsIdentityFactory<TUser> claimsFactory, IOptions<IdentityOptions> optionsAccessor)
+            IClaimsIdentityFactory<TUser> claimsFactory, IOptions<IdentityOptions> optionsAccessor, ILoggerFactory loggerFactory)
         {
             if (userManager == null)
             {
@@ -44,6 +47,8 @@ namespace Microsoft.AspNet.Identity
             Context = contextAccessor.Value;
             ClaimsFactory = claimsFactory;
             Options = optionsAccessor.Options;
+
+            _logger = loggerFactory.Create(typeof(SignInManager<TUser>).Name);
         }
 
         public UserManager<TUser> UserManager { get; private set; }
@@ -81,6 +86,7 @@ namespace Microsoft.AspNet.Identity
                 userIdentity.AddClaim(new Claim(ClaimTypes.AuthenticationMethod, authenticationMethod));
             }
             Context.Response.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, userIdentity);
+
         }
 
         // TODO: Should this be async?
@@ -218,6 +224,7 @@ namespace Microsoft.AspNet.Identity
         {
             Context.Response.SignOut(IdentityOptions.TwoFactorRememberMeCookieAuthenticationType);
             return Task.FromResult(0);
+
         }
 
         public virtual async Task<SignInStatus> TwoFactorSignInAsync(string provider, string code, bool isPersistent, 

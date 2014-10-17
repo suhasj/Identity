@@ -18,7 +18,7 @@ namespace Microsoft.Framework.DependencyInjection
             return services.Configure(configure);
         }
 
-        public static IdentityBuilder<IdentityUser, IdentityRole> AddIdentity(this IServiceCollection services, 
+        public static IdentityBuilder<IdentityUser, IdentityRole> AddIdentity(this IServiceCollection services,
             IConfiguration identityConfig = null, Action<IdentityOptions> configureOptions = null)
         {
             return services.AddIdentity<IdentityUser, IdentityRole>(identityConfig, configureOptions);
@@ -29,7 +29,7 @@ namespace Microsoft.Framework.DependencyInjection
             return services.AddIdentity<IdentityUser, IdentityRole>();
         }
 
-        public static IdentityBuilder<TUser, TRole> AddIdentity<TUser, TRole>(this IServiceCollection services, 
+        public static IdentityBuilder<TUser, TRole> AddIdentity<TUser, TRole>(this IServiceCollection services,
             IConfiguration identityConfig = null, Action<IdentityOptions> configureOptions = null)
             where TUser : class
             where TRole : class
@@ -49,6 +49,7 @@ namespace Microsoft.Framework.DependencyInjection
             services.AddScoped<ISecurityStampValidator, SecurityStampValidator<TUser>>();
             services.AddScoped<RoleManager<TRole>>();
             services.AddScoped<IClaimsIdentityFactory<TUser>, ClaimsIdentityFactory<TUser, TRole>>();
+            services.AddScoped<IUserManagerNotifications<TUser>, UserManagerNotifications<TUser>>();
 
             services.Configure<ExternalAuthenticationOptions>(options =>
             {
@@ -114,7 +115,7 @@ namespace Microsoft.Framework.DependencyInjection
             return services.AddIdentity<TUser, IdentityRole>();
         }
 
-        public static IdentityBuilder<TUser, IdentityRole> AddIdentity<TUser>(this IServiceCollection services, 
+        public static IdentityBuilder<TUser, IdentityRole> AddIdentity<TUser>(this IServiceCollection services,
             IConfiguration identityConfig)
             where TUser : class
         {

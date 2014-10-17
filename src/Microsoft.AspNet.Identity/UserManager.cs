@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Framework.OptionsModel;
 using Microsoft.AspNet.Security.DataProtection;
+using Microsoft.Framework.Logging;
 
 namespace Microsoft.AspNet.Identity
 {
@@ -28,6 +29,8 @@ namespace Microsoft.AspNet.Identity
         private IPasswordHasher<TUser> _passwordHasher;
         private IdentityOptions _options;
 
+        private readonly ILogger _logger;
+
         /// <summary>
         ///     Constructor which takes a service provider and user store
         /// </summary>
@@ -40,7 +43,8 @@ namespace Microsoft.AspNet.Identity
         public UserManager(IUserStore<TUser> store, IOptions<IdentityOptions> optionsAccessor,
             IPasswordHasher<TUser> passwordHasher, IUserValidator<TUser> userValidator,
             IPasswordValidator<TUser> passwordValidator, IUserNameNormalizer userNameNormalizer,
-            IEnumerable<IUserTokenProvider<TUser>> tokenProviders)
+            IEnumerable<IUserTokenProvider<TUser>> tokenProviders, ILoggerFactory loggerFactory,
+            IUserManagerNotifications<TUser> umNotifications)
         {
             if (store == null)
             {
@@ -60,14 +64,17 @@ namespace Microsoft.AspNet.Identity
             UserValidator = userValidator;
             PasswordValidator = passwordValidator;
             UserNameNormalizer = userNameNormalizer;
+            Notifications = umNotifications;
             // TODO: Email/Sms/Token services
 
-            if (tokenProviders != null) {
+            if (tokenProviders != null) { 
                 foreach (var tokenProvider in tokenProviders)
                 {
                     RegisterTokenProvider(tokenProvider);
                 }
             }
+
+            _logger = loggerFactory.Create(typeof(UserManager<TUser>).Name);
         }
 
         /// <summary>
@@ -120,6 +127,11 @@ namespace Microsoft.AspNet.Identity
         ///     Used to send a sms message
         /// </summary>
         public IIdentityMessageService SmsService { get; set; }
+
+        /// <summary>
+        /// Notifications class to invoke events
+        /// </summary>
+        public IUserManagerNotifications<TUser> Notifications { get; set; }
 
         public IdentityOptions Options
         {
@@ -312,6 +324,9 @@ namespace Microsoft.AspNet.Identity
                 await GetUserLockoutStore().SetLockoutEnabledAsync(user, true, cancellationToken);
             }
             await UpdateNormalizedUserName(user, cancellationToken);
+
+            await Notifications.OnUserCreateAsync(user);
+
             await Store.CreateAsync(user, cancellationToken);
             return IdentityResult.Success;
         }
@@ -380,6 +395,7 @@ namespace Microsoft.AspNet.Identity
         public virtual Task<TUser> FindByNameAsync(string userName,
             CancellationToken cancellationToken = default(CancellationToken))
         {
+            _logger.WriteInformation(string.Format("Finding user with username: {0}", userName));
             ThrowIfDisposed();
             if (userName == null)
             {
@@ -614,10 +630,13 @@ namespace Microsoft.AspNet.Identity
                 var result = await UpdatePasswordInternal(passwordStore, user, newPassword, cancellationToken);
                 if (!result.Succeeded)
                 {
+                    await Notifications.OnChangePasswordFailureAsync(result,user);
                     return result;
                 }
+                await Notifications.OnChangePasswordSuccessAsync(user);
                 return await UpdateAsync(user, cancellationToken);
             }
+            await Notifications.OnChangePasswordFailureAsync(new IdentityResult(Resources.PasswordMismatch), user);
             return IdentityResult.Failed(Resources.PasswordMismatch);
         }
 
@@ -759,8 +778,10 @@ namespace Microsoft.AspNet.Identity
             var result = await UpdatePasswordInternal(passwordStore, user, newPassword, cancellationToken);
             if (!result.Succeeded)
             {
+                await Notifications.OnResetPasswordFailureAsync(result, user);
                 return result;
             }
+            await Notifications.OnResetPasswordSuccessAsync(user);
             return await UpdateAsync(user, cancellationToken);
         }
 
