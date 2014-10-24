@@ -317,6 +317,7 @@ namespace Microsoft.AspNet.Identity
             var result = await ValidateUserInternal(user, cancellationToken);
             if (!result.Succeeded)
             {
+                await Notifications.OnCreateUserFailureAsync(result, user);
                 return result;
             }
             if (Options.Lockout.EnabledByDefault && SupportsUserLockout)
@@ -325,9 +326,9 @@ namespace Microsoft.AspNet.Identity
             }
             await UpdateNormalizedUserName(user, cancellationToken);
 
-            await Notifications.OnUserCreateAsync(user);
-
             await Store.CreateAsync(user, cancellationToken);
+            await Notifications.OnCreateUserSuccessAsync(user);
+
             return IdentityResult.Success;
         }
 
