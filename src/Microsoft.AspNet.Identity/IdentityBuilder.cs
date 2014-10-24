@@ -65,5 +65,6 @@ namespace Microsoft.AspNet.Identity
             Services.AddScoped<TManager>();
             return this;
         }
+
     }
 }

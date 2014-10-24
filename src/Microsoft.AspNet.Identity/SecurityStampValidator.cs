@@ -20,7 +20,7 @@ namespace Microsoft.AspNet.Identity
         /// <returns></returns>
         public virtual async Task Validate(CookieValidateIdentityContext context, ClaimsIdentity identity)
         {
-            var manager = context.HttpContext.RequestServices.GetRequiredService<SignInManager<TUser>>();
+            var manager = context.HttpContext.RequestServices.GetService<SignInManager<TUser>>();
             var userId = identity.GetUserId();
             var user = await manager.ValidateSecurityStampAsync(identity, userId);
             if (user != null)
@@ -65,12 +65,12 @@ namespace Microsoft.AspNet.Identity
             if (issuedUtc != null)
             {
                 var timeElapsed = currentUtc.Subtract(issuedUtc.Value);
-                var accessor = context.HttpContext.RequestServices.GetRequiredService<IOptions<IdentityOptions>>();
+                var accessor = context.HttpContext.RequestServices.GetService<IOptions<IdentityOptions>>();
                 validate = timeElapsed > accessor.Options.SecurityStampValidationInterval;
             }
             if (validate)
             {
-                var validator = context.HttpContext.RequestServices.GetRequiredService<ISecurityStampValidator>();
+                var validator = context.HttpContext.RequestServices.GetService<ISecurityStampValidator>();
                 return validator.Validate(context, context.Identity);
             }
             return Task.FromResult(0);
