@@ -1,59 +1,152 @@
-﻿using Microsoft.AspNet.Http;
-using Microsoft.Framework.Logging;
-using System;
-using System.Threading.Tasks;
-using System.Linq;
+﻿using System.Threading.Tasks;
 
 namespace Microsoft.AspNet.Identity
 {
-    public class UserManagerNotifications<TUser> : IUserManagerNotifications<TUser>  where TUser :class
+    public abstract class UserManagerNotifications<TUser> : IUserManagerNotifications<TUser> where TUser : class
     {
-        private ILogger _logger;
-
-        public UserManagerNotifications(ILoggerFactory loggerfactory)
+        public virtual Task OnAddClaimAsync(TUser user)
         {
-            _logger = loggerfactory.Create<UserManagerNotifications<TUser>>();
-        }
-
-
-        public Task OnChangePasswordFailureAsync(IdentityResult result, TUser user)
-        {
-            var identityUser = user as IdentityUser;
-            _logger.WriteError(string.Format("User {0} failed to change password", identityUser.UserName));
             return Task.FromResult(0);
         }
 
-        public Task OnChangePasswordSuccessAsync(TUser user)
+        public virtual Task OnAddLoginAsync(TUser user)
         {
-            var identityUser = user as IdentityUser;
-            _logger.WriteInformation(string.Format("User {0} successfully change password", identityUser.UserName));
             return Task.FromResult(0);
         }
 
-        public Task OnResetPasswordFailureAsync(IdentityResult result, TUser user)
+        public virtual Task OnAddPasswordFailureAsync(IdentityResult result, TUser user)
         {
-            var identityUser = user as IdentityUser;
-            _logger.WriteError(string.Format("User {0} failed to reset password due to {1}", identityUser.UserName,string.Join(",",result.Errors)));
             return Task.FromResult(0);
         }
 
-        public Task OnResetPasswordSuccessAsync(TUser user)
+        public virtual Task OnAddPasswordSuccessAsync(TUser user)
         {
-            var identityUser = user as IdentityUser;
-            _logger.WriteInformation(string.Format("User {0} successfully reset password", identityUser.UserName));
             return Task.FromResult(0);
         }
 
-        public Task OnUserCreateAsync(TUser user)
+        public virtual Task OnAddToRoleAsync(TUser user)
         {
-            var identityUser = user as IdentityUser;
-            _logger.WriteInformation(string.Format("User {0} being created", identityUser.UserName));
             return Task.FromResult(0);
         }
 
-        public Task OnUserUpdateAsync(TUser user)
+        public virtual Task OnChangePasswordFailureAsync(IdentityResult result, TUser user)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnChangePasswordSuccessAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnChangePhoneNumberAsync(IdentityResult result, TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnChangePhoneNumberSuccessAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnConfirmEmailFailureAsync(IdentityResult result, TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnConfirmEmailSuccessAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnCreateUserFailureAsync(IdentityResult result, TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnCreateUserSuccessAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnDeleteUserFailureAsync(IdentityResult result, TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnDeleteUserSuccessAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnRemoveClaimAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnRemoveLoginAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnRemovePasswordAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnRemoveRoleAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnResetPasswordFailureAsync(IdentityResult result, TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnResetPasswordSuccessAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnSetEmailAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnSetLockoutEndDateFailureAsync(IdentityResult result, TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnSetLockoutEndDateSuccessAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnSetPhoneNumberAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnUpdateUserFailureAsync(IdentityResult result, TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnUpdateUserSuccessAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnUserAccessFailedAsync(TUser user)
+        {
+            return Task.FromResult(0);
+        }
+
+        public virtual Task OnVerifyTwoFactorTokenAsync(bool result, TUser user)
+        {
+            return Task.FromResult(0);
         }
     }
 }

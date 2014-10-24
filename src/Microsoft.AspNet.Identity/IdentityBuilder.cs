@@ -23,6 +23,7 @@ namespace Microsoft.AspNet.Identity
             return this;
         }
 
+
         public IdentityBuilder<TUser, TRole> AddUserStore(IUserStore<TUser> store)
         {
             return AddInstance(store);
@@ -65,5 +66,6 @@ namespace Microsoft.AspNet.Identity
             Services.AddScoped<TManager>();
             return this;
         }
+
     }
 }
