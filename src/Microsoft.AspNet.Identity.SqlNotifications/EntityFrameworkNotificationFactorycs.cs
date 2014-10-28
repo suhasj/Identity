@@ -6,13 +6,13 @@ using System.Linq;
 
 namespace Microsoft.AspNet.Identity
 {
-    public class EntityFrameworkNotificationFactory : INotificationFactory
+    public class EntityFrameworkNotificationFactory<TContext> : INotificationFactory where TContext : DbContext
     {
-        private readonly DbContext _notificationContext;
+        private readonly TContext _notificationContext;
 
         private DbSet<UserNotification> UserNotifications { get { return _notificationContext.Set<UserNotification>(); } }
 
-        public EntityFrameworkNotificationFactory(DbContext context)
+        public EntityFrameworkNotificationFactory(TContext context)
         {
             _notificationContext = context;
         }

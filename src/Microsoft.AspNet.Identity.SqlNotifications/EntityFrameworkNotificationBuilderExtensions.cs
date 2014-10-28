@@ -15,8 +15,8 @@ namespace Microsoft.Framework.DependencyInjection
             where TUser : IdentityUser, new()
             where TContext : NotificationContext
         {
-            builder.Services.AddScoped<INotificationFactory, EntityFrameworkNotificationFactory>();
             builder.Services.AddScoped<TContext>();
+            builder.Services.AddScoped<INotificationFactory, EntityFrameworkNotificationFactory<TContext>>();
             builder.Services.AddScoped<IUserManagerNotifications<TUser>, SqlUserManagerNotifications<TUser>>();
 
             return builder;

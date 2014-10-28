@@ -10,6 +10,9 @@
     <OutputType>Web</OutputType>
     <RootNamespace>NLogSample</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AssemblyName>NLogSample</AssemblyName>
+  </PropertyGroup>
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
     <DevelopmentServerPort>59446</DevelopmentServerPort>

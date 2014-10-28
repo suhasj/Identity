@@ -35,7 +35,8 @@ namespace NLogSample
                     });
                 
                 // Add Identity services to the services container
-                services.AddDefaultIdentity<ApplicationDbContext,ApplicationUser, IdentityRole>(configuration);
+                services.AddDefaultIdentity<ApplicationDbContext,ApplicationUser, IdentityRole>(configuration)
+                .AddEntityFrameworkNotifications<SampleNotificationContext,ApplicationUser>();
 
                 // Add MVC services to the services container
                 services.AddMvc();

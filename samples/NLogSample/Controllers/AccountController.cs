@@ -12,14 +12,19 @@ namespace NLogSample.Controllers
     [Authorize]
     public class AccountController : Controller
     {
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager, 
+            SignInManager<ApplicationUser> signInManager,
+            INotificationFactory notificationFactory)
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            NotificationFactory = notificationFactory;
         }
 
         public UserManager<ApplicationUser> UserManager { get; private set; }
         public SignInManager<ApplicationUser> SignInManager { get; private set; }
+
+        public INotificationFactory NotificationFactory { get; private set; }
 
         // GET: /Account/Login
         [HttpGet]
@@ -126,6 +131,13 @@ namespace NLogSample.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        public async Task<IActionResult> UserHistory()
+        {
+            var user = await GetCurrentUserAsync();
+
+            return View(NotificationFactory.GetNotificationsForUser(user.Id));
         }
 
         //
