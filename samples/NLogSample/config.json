@@ -1,7 +1,7 @@
 ﻿{
     "Data": {
         "DefaultConnection": {
-            "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=aspnetvnext-NLogSample-269ea0a6-02b2-40c9-b3d8-f1423604b29d;Trusted_Connection=True;MultipleActiveResultSets=true"
+            "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=aspnetvnext-NLogSample-Identity-1;Trusted_Connection=True;MultipleActiveResultSets=true"
         },
         "IdentityNotificationConnection": {
             "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=aspnetvnext-NLogSample-Notifications-1;Trusted_Connection=True;MultipleActiveResultSets=true"

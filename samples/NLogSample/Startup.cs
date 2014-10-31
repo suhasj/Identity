@@ -9,20 +9,18 @@ using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Framework.DependencyInjection;
 using NLogSample.Models;
 using Microsoft.Framework.Logging;
+using Microsoft.Framework.Logging.Console;
 
 namespace NLogSample
 {
     public class Startup
     {
-        public void Configure(IApplicationBuilder app)
+        public void Configure(IApplicationBuilder app, ILoggerFactory loggerFactory)
         {
             // Setup configuration sources
             var configuration = new Configuration();
             configuration.AddJsonFile("config.json");
             configuration.AddEnvironmentVariables();
-
-            var factory = new LoggerFactory();
-            factory.AddNLog(new global::NLog.LogFactory());
 
             // Set up application services
             app.UseServices(services =>
@@ -41,7 +39,9 @@ namespace NLogSample
                 // Add MVC services to the services container
                 services.AddMvc();
 
-                services.AddInstance<ILoggerFactory>(factory);
+                // Choose either the console logger or the Nlogger
+                //services.AddNLogger();
+                loggerFactory.AddConsole();
             });
 
             // Enable Browser Link support
@@ -65,6 +65,18 @@ namespace NLogSample
                     name: "api",
                     template: "{controller}/{id?}");
             });
+        }
+        
+    }
+
+    public static class ServiceExtensions
+    {
+        public static void AddNLogger(this ServiceCollection services)
+        {
+            var factory = new LoggerFactory();
+            factory.AddNLog(new global::NLog.LogFactory());
+
+            services.AddInstance<ILoggerFactory>(factory);
         }
     }
 }
