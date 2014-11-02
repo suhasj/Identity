@@ -18,6 +18,7 @@ namespace Microsoft.Framework.DependencyInjection
             builder.Services.AddScoped<TContext>();
             builder.Services.AddScoped<INotificationFactory, EntityFrameworkNotificationFactory<TContext>>();
             builder.Services.AddScoped<IUserManagerNotifications<TUser>, SqlUserManagerNotifications<TUser>>();
+            builder.Services.AddScoped<ISigninManagerNotifications<TUser>, SqlSigninManagerNotifications<TUser>>();
 
             return builder;
         }

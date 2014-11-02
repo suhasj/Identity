@@ -25,7 +25,8 @@ namespace Microsoft.AspNet.Identity
         private readonly ILogger _logger;
 
         public SignInManager(UserManager<TUser> userManager, IContextAccessor<HttpContext> contextAccessor, 
-            IClaimsIdentityFactory<TUser> claimsFactory, IOptions<IdentityOptions> optionsAccessor, ILoggerFactory loggerFactory)
+            IClaimsIdentityFactory<TUser> claimsFactory, IOptions<IdentityOptions> optionsAccessor, 
+            ILoggerFactory loggerFactory, ISigninManagerNotifications<TUser> notifications)
         {
             if (userManager == null)
             {
@@ -47,6 +48,7 @@ namespace Microsoft.AspNet.Identity
             Context = contextAccessor.Value;
             ClaimsFactory = claimsFactory;
             Options = optionsAccessor.Options;
+            Notifications = notifications;
 
             _logger = loggerFactory.Create(typeof(SignInManager<TUser>).Name);
         }
@@ -55,6 +57,8 @@ namespace Microsoft.AspNet.Identity
         public HttpContext Context { get; private set; }
         public IClaimsIdentityFactory<TUser> ClaimsFactory { get; private set; }
         public IdentityOptions Options { get; private set; }
+
+        public ISigninManagerNotifications<TUser> Notifications { get; set; }
 
         // Should this be a func?
         public virtual async Task<ClaimsIdentity> CreateUserIdentityAsync(TUser user,
@@ -85,6 +89,9 @@ namespace Microsoft.AspNet.Identity
             {
                 userIdentity.AddClaim(new Claim(ClaimTypes.AuthenticationMethod, authenticationMethod));
             }
+
+            await Notifications.OnUserSigninAsync(user, userIdentity);
+
             Context.Response.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, userIdentity);
 
         }
@@ -144,6 +151,9 @@ namespace Microsoft.AspNet.Identity
                 await ResetLockout(user, cancellationToken);
                 return await SignInOrTwoFactorAsync(user, isPersistent, cancellationToken);
             }
+
+            await Notifications.OnIncorrectPasswordSignInAsync(user);
+
             if (UserManager.SupportsUserLockout && shouldLockout)
             {
                 // If lockout is requested, increment access failed count which might lock out the user
