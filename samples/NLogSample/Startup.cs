@@ -29,7 +29,7 @@ namespace NLogSample
                 services.AddEntityFramework()
                     .AddSqlServer().AddDbContext<ApplicationDbContext>(options=>
                     {
-                        options.UseSqlServer(configuration.Get("Data:DefaultConnection:ConnectionString"));
+                        options.UseAzureTableStorage(configuration.Get("Data:DefaultConnection:ConnectionString"));
                     });
                 
                 // Add Identity services to the services container

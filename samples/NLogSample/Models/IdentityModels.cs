@@ -4,6 +4,8 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Data.Entity;
 using Microsoft.Framework.OptionsModel;
 using Microsoft.Framework.ConfigurationModel;
+using Microsoft.Data.Entity.Metadata;
+using Microsoft.Data.Entity.AzureTableStorage;
 
 namespace NLogSample.Models
 {
@@ -27,6 +29,53 @@ namespace NLogSample.Models
                 Database.EnsureCreated();
                 _created = true;
             }
+        }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<ApplicationUser>().ForAzureTableStorage(u =>
+            {
+                u.PartitionAndRowKey(s => s.Id, s => s.UserName);
+                u.Timestamp("Timestamp", true);
+                u.Table("IdentityUser");
+            });
+
+            builder.Entity<IdentityRole>().ForAzureTableStorage(u =>
+            {
+                u.PartitionAndRowKey(s => s.Id, s => s.Name);
+                u.Timestamp("Timestamp", true);
+                u.Table("IdentityRoles");
+            });
+
+            builder.Entity<IdentityRoleClaim>().ForAzureTableStorage(u =>
+            {
+                u.PartitionAndRowKey(s => s.Id, s => s.RoleId);
+                u.Timestamp("Timestamp", true);
+                u.Table("IdentityRoleClaims");
+            });
+
+            builder.Entity<IdentityUserClaim>().ForAzureTableStorage(u =>
+            {
+                u.PartitionAndRowKey(s => s.Id, s => s.UserId);
+                u.Timestamp("Timestamp", true);
+                u.Table("IdentityUserClaims");
+            });
+
+            builder.Entity<IdentityUserLogin>().ForAzureTableStorage(u =>
+            {
+                u.PartitionAndRowKey(s => s.UserId, s => s.ProviderKey);
+                u.Timestamp("Timestamp", true);
+                u.Table("IdentityUserLogins");
+            });
+
+            builder.Entity<IdentityUserRole>().ForAzureTableStorage(u =>
+            {
+                u.PartitionAndRowKey(s => s.UserId, s => s.RoleId);
+                u.Timestamp("Timestamp", true);
+                u.Table("IdentityUserRoles");
+            });
+
+           // base.OnModelCreating(builder);
         }
     }
 
@@ -52,7 +101,17 @@ namespace NLogSample.Models
             configuration.AddJsonFile("config.json");
             configuration.AddEnvironmentVariables();
 
-            options.UseSqlServer(configuration.Get("Data:IdentityNotificationConnection:ConnectionString"));
+            options.UseAzureTableStorage(configuration.Get("Data:IdentityNotificationConnection:ConnectionString"));
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UserNotification>().ForAzureTableStorage(u =>
+            {
+                u.PartitionAndRowKey(s => s.UserId, s => s.Id);
+                u.Timestamp("Timestamp", true);
+                u.Table("IdentityUserNotifications");
+            });
         }
     }
 }
