@@ -6,12 +6,14 @@ using Microsoft.Framework.OptionsModel;
 using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Data.Entity.Metadata;
 using Microsoft.Data.Entity.AzureTableStorage;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NLogSample.Models
 {
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
+        
         public ApplicationUser()
         {
             LockoutEnd = DateTimeOffset.UtcNow;
@@ -29,7 +31,7 @@ namespace NLogSample.Models
             // are supported in ASP.NET vNext
             if (!_created)
             {
-              //  Database.EnsureDeleted();
+               // Database.EnsureDeleted();
                 Database.EnsureCreated();
                 _created = true;
             }
@@ -37,7 +39,7 @@ namespace NLogSample.Models
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            // MapModelsForATS(builder);
+             //MapModelsForATS(builder);
 
             base.OnModelCreating(builder);
         }
@@ -47,42 +49,36 @@ namespace NLogSample.Models
             builder.Entity<ApplicationUser>().ForAzureTableStorage(u =>
             {
                 u.PartitionAndRowKey(s => s.Id, s => s.UserName);
-                u.Timestamp("Timestamp", true);
                 u.Table("IdentityUsers");
             });
 
-            builder.Entity<IdentityRole<string>>().ForAzureTableStorage(u =>
+            builder.Entity<IdentityRole>().ForAzureTableStorage(u =>
             {
                 u.PartitionAndRowKey(s => s.Id, s => s.Name);
-                u.Timestamp("Timestamp", true);
                 u.Table("IdentityRoles");
             });
 
             builder.Entity<IdentityRoleClaim<string>>().ForAzureTableStorage(u =>
             {
                 u.PartitionAndRowKey(s => s.Id, s => s.RoleId);
-                u.Timestamp("Timestamp", true);
                 u.Table("IdentityRoleClaims");
             });
 
             builder.Entity<IdentityUserClaim<string>>().ForAzureTableStorage(u =>
             {
                 u.PartitionAndRowKey(s => s.Id, s => s.UserId);
-                u.Timestamp("Timestamp", true);
                 u.Table("IdentityUserClaims");
             });
 
             builder.Entity<IdentityUserLogin<string>>().ForAzureTableStorage(u =>
             {
                 u.PartitionAndRowKey(s => s.UserId, s => s.ProviderKey);
-                u.Timestamp("Timestamp", true);
                 u.Table("IdentityUserLogins");
             });
 
             builder.Entity<IdentityUserRole<string>>().ForAzureTableStorage(u =>
             {
                 u.PartitionAndRowKey(s => s.UserId, s => s.RoleId);
-                u.Timestamp("Timestamp", true);
                 u.Table("IdentityUserRoles");
             });
         }
@@ -99,7 +95,7 @@ namespace NLogSample.Models
             // are supported in ASP.NET vNext
             if (!_created)
             {
-                // Database.EnsureDeleted();
+             //   Database.EnsureDeleted();
                 Database.EnsureCreated();
                 _created = true;
             }
@@ -120,7 +116,6 @@ namespace NLogSample.Models
             //modelBuilder.Entity<UserNotification>().ForAzureTableStorage(u =>
             //{
             //    u.PartitionAndRowKey(s => s.UserId, s => s.Id);
-            //    u.Timestamp("Timestamp", true);
             //    u.Table("IdentityUserNotifications");
             //});
 
