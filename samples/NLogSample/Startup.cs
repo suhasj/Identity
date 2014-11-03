@@ -27,14 +27,19 @@ namespace NLogSample
             {
                 // Add EF services to the services container
                 services.AddEntityFramework()
-                    .AddSqlServer().AddDbContext<ApplicationDbContext>(options=>
-                    {
-                        options.UseAzureTableStorage(configuration.Get("Data:DefaultConnection:ConnectionString"));
-                    });
-                
+                .AddSqlServer().AddDbContext<ApplicationDbContext>(options =>
+                {
+                    options.UseSqlServer(configuration.Get("Data:DefaultConnection:ConnectionString"));
+                });
+                //services.AddEntityFramework()
+                //    .AddAzureTableStorage().AddDbContext<ApplicationDbContext>(options =>
+                //    {
+                //        options.UseAzureTableStorage(configuration.Get("Data:DefaultConnection:ConnectionString"));
+                //    });
+
                 // Add Identity services to the services container
-                services.AddDefaultIdentity<ApplicationDbContext,ApplicationUser, IdentityRole>(configuration)
-                .AddEntityFrameworkNotifications<SampleNotificationContext,ApplicationUser>();
+                services.AddDefaultIdentity<ApplicationDbContext, ApplicationUser, IdentityRole>(configuration)
+                .AddEntityFrameworkNotifications<SampleNotificationContext, ApplicationUser>();
 
                 // Add MVC services to the services container
                 services.AddMvc();
@@ -57,7 +62,7 @@ namespace NLogSample
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default", 
+                    name: "default",
                     template: "{controller}/{action}/{id?}",
                     defaults: new { controller = "Home", action = "Index" });
 
@@ -66,7 +71,7 @@ namespace NLogSample
                     template: "{controller}/{id?}");
             });
         }
-        
+
     }
 
     public static class ServiceExtensions

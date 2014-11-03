@@ -12,20 +12,24 @@ namespace NLogSample.Models
     // Add profile data for application users by adding properties to the ApplicationUser class
     public class ApplicationUser : IdentityUser
     {
-
+        public ApplicationUser()
+        {
+            LockoutEnd = DateTimeOffset.UtcNow;
+        }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         private static bool _created = false;
-        
+
         public ApplicationDbContext() : base()
-        {            
+        {
             // Create the database and schema if it doesn't exist
             // This is a temporary workaround to create database until Entity Framework database migrations 
             // are supported in ASP.NET vNext
             if (!_created)
             {
+              //  Database.EnsureDeleted();
                 Database.EnsureCreated();
                 _created = true;
             }
@@ -33,49 +37,54 @@ namespace NLogSample.Models
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            // MapModelsForATS(builder);
+
+            base.OnModelCreating(builder);
+        }
+
+        private static void MapModelsForATS(ModelBuilder builder)
+        {
             builder.Entity<ApplicationUser>().ForAzureTableStorage(u =>
             {
                 u.PartitionAndRowKey(s => s.Id, s => s.UserName);
                 u.Timestamp("Timestamp", true);
-                u.Table("IdentityUser");
+                u.Table("IdentityUsers");
             });
 
-            builder.Entity<IdentityRole>().ForAzureTableStorage(u =>
+            builder.Entity<IdentityRole<string>>().ForAzureTableStorage(u =>
             {
                 u.PartitionAndRowKey(s => s.Id, s => s.Name);
                 u.Timestamp("Timestamp", true);
                 u.Table("IdentityRoles");
             });
 
-            builder.Entity<IdentityRoleClaim>().ForAzureTableStorage(u =>
+            builder.Entity<IdentityRoleClaim<string>>().ForAzureTableStorage(u =>
             {
                 u.PartitionAndRowKey(s => s.Id, s => s.RoleId);
                 u.Timestamp("Timestamp", true);
                 u.Table("IdentityRoleClaims");
             });
 
-            builder.Entity<IdentityUserClaim>().ForAzureTableStorage(u =>
+            builder.Entity<IdentityUserClaim<string>>().ForAzureTableStorage(u =>
             {
                 u.PartitionAndRowKey(s => s.Id, s => s.UserId);
                 u.Timestamp("Timestamp", true);
                 u.Table("IdentityUserClaims");
             });
 
-            builder.Entity<IdentityUserLogin>().ForAzureTableStorage(u =>
+            builder.Entity<IdentityUserLogin<string>>().ForAzureTableStorage(u =>
             {
                 u.PartitionAndRowKey(s => s.UserId, s => s.ProviderKey);
                 u.Timestamp("Timestamp", true);
                 u.Table("IdentityUserLogins");
             });
 
-            builder.Entity<IdentityUserRole>().ForAzureTableStorage(u =>
+            builder.Entity<IdentityUserRole<string>>().ForAzureTableStorage(u =>
             {
                 u.PartitionAndRowKey(s => s.UserId, s => s.RoleId);
                 u.Timestamp("Timestamp", true);
                 u.Table("IdentityUserRoles");
             });
-
-           // base.OnModelCreating(builder);
         }
     }
 
@@ -90,6 +99,7 @@ namespace NLogSample.Models
             // are supported in ASP.NET vNext
             if (!_created)
             {
+                // Database.EnsureDeleted();
                 Database.EnsureCreated();
                 _created = true;
             }
@@ -101,17 +111,20 @@ namespace NLogSample.Models
             configuration.AddJsonFile("config.json");
             configuration.AddEnvironmentVariables();
 
-            options.UseAzureTableStorage(configuration.Get("Data:IdentityNotificationConnection:ConnectionString"));
+            options.UseSqlServer(configuration.Get("Data:IdentityNotificationConnection:ConnectionString"));
+            //options.UseAzureTableStorage(configuration.Get("Data:IdentityNotificationConnection:ConnectionString"));
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<UserNotification>().ForAzureTableStorage(u =>
-            {
-                u.PartitionAndRowKey(s => s.UserId, s => s.Id);
-                u.Timestamp("Timestamp", true);
-                u.Table("IdentityUserNotifications");
-            });
+            //modelBuilder.Entity<UserNotification>().ForAzureTableStorage(u =>
+            //{
+            //    u.PartitionAndRowKey(s => s.UserId, s => s.Id);
+            //    u.Timestamp("Timestamp", true);
+            //    u.Table("IdentityUserNotifications");
+            //});
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

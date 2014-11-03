@@ -1,10 +1,12 @@
 ﻿{
     "Data": {
         "DefaultConnection": {
-            "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=aspnetvnext-NLogSample-Identity-1;Trusted_Connection=True;MultipleActiveResultSets=true"
+             "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=aspnetvnext-NLogSample-Identity-1;Trusted_Connection=True;MultipleActiveResultSets=true"
+           // "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=twideoblob;AccountKey=YiU/y6qwdzPclw0zpwG8q13z2SDAG8cm56zBpgLBdsmhvay05J0nNU6bSAVL0SpkN+11rajxbGb/MjOPl2/aZA=="
         },
         "IdentityNotificationConnection": {
-            "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=aspnetvnext-NLogSample-Notifications-1;Trusted_Connection=True;MultipleActiveResultSets=true"
+              "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=aspnetvnext-NLogSample-Notifications-1;Trusted_Connection=True;MultipleActiveResultSets=true"
+            // "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=twideoblob;AccountKey=YiU/y6qwdzPclw0zpwG8q13z2SDAG8cm56zBpgLBdsmhvay05J0nNU6bSAVL0SpkN+11rajxbGb/MjOPl2/aZA=="
         }
     }
 }
