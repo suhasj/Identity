@@ -25,21 +25,9 @@ namespace NLogSample
             // Set up application services
             app.UseServices(services =>
             {
-                // Add EF services to the services container
-                services.AddEntityFramework()
-                .AddSqlServer().AddDbContext<ApplicationDbContext>(options =>
-                {
-                    options.UseSqlServer(configuration.Get("Data:DefaultConnection:ConnectionString"));
-                });
-                //services.AddEntityFramework()
-                //    .AddAzureTableStorage().AddDbContext<ApplicationDbContext>(options =>
-                //    {
-                //        options.UseAzureTableStorage(configuration.Get("Data:DefaultConnection:ConnectionString"));
-                //    });
-
-                // Add Identity services to the services container
-                services.AddDefaultIdentity<ApplicationDbContext, ApplicationUser, IdentityRole>(configuration)
-                .AddEntityFrameworkNotifications<SampleNotificationContext, ApplicationUser>();
+                // Add EF and Identity services to the services container                
+                RegisterSQLEFAndIdentity(services, configuration);
+               // RegisterATSEFAndIdentity(services, configuration);
 
                 // Add MVC services to the services container
                 services.AddMvc();
@@ -72,6 +60,31 @@ namespace NLogSample
             });
         }
 
+        private static void RegisterATSEFAndIdentity(ServiceCollection services, Configuration configuration)
+        {
+            services.AddEntityFramework()
+                    .AddAzureTableStorage().AddDbContext<ApplicationDbContext>(options =>
+                    {
+                        options.UseAzureTableStorage(configuration.Get("Data:DefaultConnection:ConnectionString"));
+                    });
+
+            // Add Identity services to the services container
+            services.AddDefaultIdentity<ApplicationDbContext, ApplicationUser, IdentityRole>(configuration)
+            .AddEntityFrameworkNotifications<ApplicationDbContext, ApplicationUser>();
+        }
+        private static void RegisterSQLEFAndIdentity(ServiceCollection services, Configuration configuration)
+        {
+            services.AddEntityFramework()
+                    .AddSqlServer().AddDbContext<ApplicationDbContext>(options =>
+                    {
+                        options.UseSqlServer(configuration.Get("Data:DefaultConnection:ConnectionString"));
+                    });
+
+            services.AddScoped<SampleNotificationContext>();
+            // Add Identity services to the services container
+            services.AddDefaultIdentity<ApplicationDbContext, ApplicationUser, IdentityRole>(configuration)
+            .AddEntityFrameworkNotifications<SampleNotificationContext, ApplicationUser>();
+        }
     }
 
     public static class ServiceExtensions

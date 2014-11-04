@@ -137,7 +137,7 @@ namespace NLogSample.Controllers
         {
             var user = await GetCurrentUserAsync();
 
-            return View(NotificationFactory.GetNotificationsForUser(user.Id));
+            return View(NotificationFactory.GetNotificationsForUser(user.Id).ToList());
         }
 
         //

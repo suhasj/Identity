@@ -14,28 +14,28 @@ namespace Microsoft.AspNet.Identity
 
         public override Task OnChangePasswordFailureAsync(IdentityResult result, TUser user)
         {
-            var notification = new UserNotification() { UserId = user.Id, ActivityTime = DateTimeOffset.UtcNow, Activity = "Password change attempt failed" };
+            var notification = new UserNotification() { UserId = user.Id, ActivityTime = DateTime.UtcNow, Activity = "Password change attempt failed" };
 
             return _notificationFactory.CreateAsync(notification);
         }
 
         public override Task OnChangePasswordSuccessAsync(TUser user)
         {
-            var notification = new UserNotification() { UserId = user.Id, ActivityTime = DateTimeOffset.UtcNow, Activity = "Password changed" };
+            var notification = new UserNotification() { UserId = user.Id, ActivityTime = DateTime.UtcNow, Activity = "Password changed" };
 
             return _notificationFactory.CreateAsync(notification);
         }
 
         public override Task OnCreateUserFailureAsync(IdentityResult result, TUser user)
         {
-            var notification = new UserNotification() { UserId = user.Id, ActivityTime = DateTimeOffset.UtcNow, Activity = "Creating user failed" };
+            var notification = new UserNotification() { UserId = user.Id, ActivityTime = DateTime.UtcNow, Activity = "Creating user failed" };
 
             return _notificationFactory.CreateAsync(notification);
         }
 
         public override Task OnCreateUserSuccessAsync(TUser user)
         {
-            var notification = new UserNotification() { UserId = user.Id, ActivityTime = DateTimeOffset.UtcNow, Activity = "Password changed" };
+            var notification = new UserNotification() { UserId = user.Id, ActivityTime = DateTime.UtcNow, Activity = "Password changed" };
 
             return _notificationFactory.CreateAsync(notification);
         }

@@ -1,12 +1,12 @@
 ﻿{
     "Data": {
         "DefaultConnection": {
-             "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=aspnetvnext-NLogSample-Identity-1;Trusted_Connection=True;MultipleActiveResultSets=true"
-         //   "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=identityblob;AccountKey=9gtMdBnDg7jgZX6GG3d5QAPS5KMzvEwmjm7yHR+clYj9wzZBNo614bck1XFWYRlCqqDZYuxI64laHrCfE8sfTA=="
+            "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=aspnetvnext-NLogSample-Identity-1;Trusted_Connection=True;MultipleActiveResultSets=true"
+          //  "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=identityblob;AccountKey=9gtMdBnDg7jgZX6GG3d5QAPS5KMzvEwmjm7yHR+clYj9wzZBNo614bck1XFWYRlCqqDZYuxI64laHrCfE8sfTA=="
         },
         "IdentityNotificationConnection": {
               "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=aspnetvnext-NLogSample-Notifications-1;Trusted_Connection=True;MultipleActiveResultSets=true"
-            // "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=identityblob;AccountKey=9gtMdBnDg7jgZX6GG3d5QAPS5KMzvEwmjm7yHR+clYj9wzZBNo614bck1XFWYRlCqqDZYuxI64laHrCfE8sfTA=="
+           //  "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=identityblob;AccountKey=9gtMdBnDg7jgZX6GG3d5QAPS5KMzvEwmjm7yHR+clYj9wzZBNo614bck1XFWYRlCqqDZYuxI64laHrCfE8sfTA=="
         }
     }
 }

@@ -15,14 +15,14 @@ namespace Microsoft.AspNet.Identity
 
         public override Task OnIncorrectPasswordSignInAsync(TUser user)
         {
-            var notification = new UserNotification() { UserId = user.Id, ActivityTime = DateTimeOffset.UtcNow, Activity = "Login attempt with incorrect password" };
+            var notification = new UserNotification() { UserId = user.Id, ActivityTime = DateTime.UtcNow, Activity = "Login attempt with incorrect password" };
 
             return _notificationFactory.CreateAsync(notification);
         }
 
         public override Task OnUserSigninAsync(TUser user, ClaimsIdentity userIdentity)
         {
-            var notification = new UserNotification() { UserId = user.Id, ActivityTime = DateTimeOffset.UtcNow, Activity = "User login success" };
+            var notification = new UserNotification() { UserId = user.Id, ActivityTime = DateTime.UtcNow, Activity = "User login success" };
 
             return _notificationFactory.CreateAsync(notification);
         }

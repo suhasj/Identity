@@ -7,6 +7,7 @@ using Microsoft.Framework.ConfigurationModel;
 using Microsoft.Data.Entity.Metadata;
 using Microsoft.Data.Entity.AzureTableStorage;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace NLogSample.Models
 {
@@ -31,7 +32,7 @@ namespace NLogSample.Models
             // are supported in ASP.NET vNext
             if (!_created)
             {
-               // Database.EnsureDeleted();
+              //  Database.EnsureDeleted();
                 Database.EnsureCreated();
                 _created = true;
             }
@@ -39,18 +40,20 @@ namespace NLogSample.Models
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-             //MapModelsForATS(builder);
+           // MapModelsForATS(builder);
 
             base.OnModelCreating(builder);
         }
 
         private static void MapModelsForATS(ModelBuilder builder)
         {
-            builder.Entity<ApplicationUser>().ForAzureTableStorage(u =>
+            var entity = builder.Entity<ApplicationUser>().ForAzureTableStorage(u =>
             {
                 u.PartitionAndRowKey(s => s.Id, s => s.UserName);
                 u.Table("IdentityUsers");
             });
+
+            entity.Metadata.RemoveProperty(entity.Metadata.Properties.Where(x => x.Name.Equals("LockoutEnd")).FirstOrDefault());
 
             builder.Entity<IdentityRole>().ForAzureTableStorage(u =>
             {
@@ -81,6 +84,12 @@ namespace NLogSample.Models
                 u.PartitionAndRowKey(s => s.UserId, s => s.RoleId);
                 u.Table("IdentityUserRoles");
             });
+
+            var notificationEntity = builder.Entity<UserNotification>().ForAzureTableStorage(u =>
+            {
+                u.PartitionAndRowKey(s => s.UserId, s=> s.RowKey);
+                u.Table("IdentityUserNotifications");
+            });
         }
     }
 
@@ -95,7 +104,7 @@ namespace NLogSample.Models
             // are supported in ASP.NET vNext
             if (!_created)
             {
-             //   Database.EnsureDeleted();
+               // Database.EnsureDeleted();
                 Database.EnsureCreated();
                 _created = true;
             }
@@ -108,18 +117,7 @@ namespace NLogSample.Models
             configuration.AddEnvironmentVariables();
 
             options.UseSqlServer(configuration.Get("Data:IdentityNotificationConnection:ConnectionString"));
-            //options.UseAzureTableStorage(configuration.Get("Data:IdentityNotificationConnection:ConnectionString"));
         }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //modelBuilder.Entity<UserNotification>().ForAzureTableStorage(u =>
-            //{
-            //    u.PartitionAndRowKey(s => s.UserId, s => s.Id);
-            //    u.Table("IdentityUserNotifications");
-            //});
-
-            base.OnModelCreating(modelBuilder);
-        }
     }
 }

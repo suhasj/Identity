@@ -32,7 +32,7 @@ namespace Microsoft.AspNet.Identity
 
         public IEnumerable<UserNotification> GetNotificationsForUser(string userId)
         {
-            return UserNotifications.Where(x => x.UserId.Equals(userId, StringComparison.OrdinalIgnoreCase)).Select(x => x);
+            return UserNotifications.Where(x => x.UserId.Equals(userId, StringComparison.OrdinalIgnoreCase)).Select(x => x).OrderBy(x=>x.ActivityTime);
         }
 
         public UserNotification GetNotificaton(int id)

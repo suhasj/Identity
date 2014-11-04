@@ -16,7 +16,6 @@ namespace Microsoft.AspNet.Identity
         {
             modelBuilder.Entity<UserNotification>(b =>
             {
-                b.Key(u => u.Id);
                 b.ForRelational().Table("UserNotifications");
             });
 
